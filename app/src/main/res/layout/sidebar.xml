@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFF3E0"
+    android:padding="8dp">
+
+    <!-- Sidebar Buttons -->
+    <Button
+        android:id="@+id/nav_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Home"
+        android:drawableLeft="@drawable/ic_launcher_foreground"
+        android:backgroundTint="#FF7043"
+        android:textColor="#fff"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/nav_project"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Project"
+        android:drawableLeft="@drawable/ic_launcher_foreground"
+        android:backgroundTint="#FF7043"
+        android:textColor="#fff"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/nav_mentors"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mentors"
+        android:drawableLeft="@drawable/ic_launcher_foreground"
+        android:backgroundTint="#FF7043"
+        android:textColor="#fff"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/nav_appointment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Appointment"
+        android:drawableLeft="@drawable/ic_launcher_foreground"
+        android:backgroundTint="#FF7043"
+        android:textColor="#fff"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/nav_deadline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Deadline"
+        android:drawableLeft="@drawable/ic_launcher_foreground"
+        android:backgroundTint="#FF7043"
+        android:textColor="#fff"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/nav_wallet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Wallet"
+        android:drawableLeft="@drawable/ic_launcher_foreground"
+        android:backgroundTint="#FF7043"
+        android:textColor="#fff"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/nav_chat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chat"
+        android:drawableLeft="@drawable/ic_launcher_foreground"
+        android:backgroundTint="#FF7043"
+        android:textColor="#fff"
+        android:layout_marginBottom="8dp" />
+</LinearLayout>
