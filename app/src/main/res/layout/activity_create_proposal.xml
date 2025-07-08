@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/create_proposal"
     android:padding="24dp"
     android:background="#FFF8F2">
 
@@ -40,7 +41,9 @@
             android:hint="Propose a Topic"
             android:padding="10dp"
             android:textColor="#000000"
-            android:textColorHint="#222222" />
+            android:textColorHint="#222222"
+            android:minHeight="48dp"
+            android:minWidth="48dp"/>
 
         <!-- Major -->
         <TextView
@@ -53,11 +56,14 @@
             android:layout_marginBottom="4dp"/>
 
         <Spinner
-            android:id="@+id/spinner_major"
+            android:id="@+id/spinner_lecturer_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:minWidth="48dp"
             android:background="@drawable/orange_rounded_bg"
             android:padding="10dp" />
+
 
         <!-- Description -->
         <TextView
@@ -77,7 +83,9 @@
             android:hint="A short description"
             android:padding="10dp"
             android:textColor="#000000"
-            android:textColorHint="#222222" />
+            android:textColorHint="#222222"
+            android:minHeight="48dp"
+            android:minWidth="48dp"/>
 
         <!-- Lecturer -->
         <TextView
@@ -90,11 +98,14 @@
             android:layout_marginBottom="4dp"/>
 
         <Spinner
-            android:id="@+id/spinner_lecturer"
+            android:id="@+id/spinner_lecturer_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:minWidth="48dp"
             android:background="@drawable/orange_rounded_bg"
             android:padding="10dp" />
+
 
         <!-- Buttons -->
         <LinearLayout
@@ -118,7 +129,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Save"
-                android:background="#A6A8AB"
+                android:background="#5A5C60"
                 android:textColor="#FFFFFF"/>
         </LinearLayout>
 
