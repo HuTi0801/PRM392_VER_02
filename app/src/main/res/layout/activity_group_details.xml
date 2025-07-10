@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/group_details"
     android:background="#F5F5F5"
     android:padding="16dp">
@@ -21,7 +22,8 @@
             android:textStyle="bold"
             android:textColor="#333333"
             android:gravity="center"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="24dp"
+            tools:ignore="HardcodedText"/>
 
         <!-- Member Information Card -->
         <androidx.cardview.widget.CardView
@@ -45,7 +47,8 @@
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#333333"
-                    android:layout_marginBottom="16dp" />
+                    android:layout_marginBottom="16dp"
+                    tools:ignore="HardcodedText"/>
 
                 <!-- Mentors Section -->
                 <LinearLayout
@@ -58,7 +61,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        tools:ignore="UselessParent">
 
                         <!-- Mentor Row -->
                         <LinearLayout
@@ -66,7 +70,8 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:gravity="start"
-                            android:layout_marginBottom="8dp"/>
+                            android:layout_marginBottom="8dp"
+                            tools:ignore="UselessLeaf" />
 
                         <!-- Leader Row -->
                         <LinearLayout
@@ -85,7 +90,8 @@
                                 android:paddingHorizontal="12dp"
                                 android:paddingVertical="6dp"
                                 android:layout_marginEnd="8dp"
-                                android:textSize="12sp" />
+                                android:textSize="12sp"
+                                tools:ignore="HardcodedText"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -96,7 +102,8 @@
                                 android:paddingHorizontal="12dp"
                                 android:paddingVertical="6dp"
                                 android:layout_marginEnd="8dp"
-                                android:textSize="12sp" />
+                                android:textSize="12sp"
+                                tools:ignore="HardcodedText"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -107,7 +114,8 @@
                                 android:paddingHorizontal="12dp"
                                 android:paddingVertical="6dp"
                                 android:layout_marginEnd="8dp"
-                                android:textSize="12sp" />
+                                android:textSize="12sp"
+                                tools:ignore="HardcodedText"/>
 
                             <Button
                                 android:layout_width="wrap_content"
@@ -118,7 +126,8 @@
                                 android:background="@drawable/gray_rounded_bg"
                                 android:paddingHorizontal="8dp"
                                 android:minWidth="48dp"
-                                android:minHeight="48dp" />
+                                android:minHeight="48dp"
+                                tools:ignore="HardcodedText,SmallSp"/>
 
                         </LinearLayout>
 
@@ -139,7 +148,8 @@
                         android:text="Member 2"
                         android:textSize="16sp"
                         android:textColor="#333333"
-                        android:layout_marginBottom="8dp" />
+                        android:layout_marginBottom="8dp"
+                        tools:ignore="HardcodedText"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -156,7 +166,8 @@
                             android:paddingHorizontal="12dp"
                             android:paddingVertical="6dp"
                             android:layout_marginEnd="8dp"
-                            android:textSize="12sp" />
+                            android:textSize="12sp"
+                            tools:ignore="HardcodedText"/>
 
                         <EditText
                             android:layout_width="0dp"
@@ -169,7 +180,8 @@
                             android:layout_marginEnd="8dp"
                             android:maxWidth="200dp"
                             android:minWidth="48dp"
-                            android:minHeight="48dp"/>
+                            android:minHeight="48dp"
+                            tools:ignore="Autofill,HardcodedText,TextFields"/>
 
                         <Button
                             android:layout_width="wrap_content"
@@ -180,7 +192,8 @@
                             android:background="@drawable/green_rounded_bg"
                             android:paddingHorizontal="12dp"
                             android:minWidth="48dp"
-                            android:minHeight="48dp" />
+                            android:minHeight="48dp"
+                            tools:ignore="HardcodedText,SmallSp"/>
 
                     </LinearLayout>
 
@@ -199,7 +212,8 @@
                         android:text="Member 3"
                         android:textSize="16sp"
                         android:textColor="#333333"
-                        android:layout_marginBottom="8dp" />
+                        android:layout_marginBottom="8dp"
+                        tools:ignore="HardcodedText"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -216,7 +230,8 @@
                             android:paddingHorizontal="12dp"
                             android:paddingVertical="6dp"
                             android:layout_marginEnd="8dp"
-                            android:textSize="12sp" />
+                            android:textSize="12sp"
+                            tools:ignore="HardcodedText"/>
 
                         <EditText
                             android:layout_width="0dp"
@@ -227,7 +242,8 @@
                             android:paddingHorizontal="8dp"
                             android:background="@drawable/edittext_bg"
                             android:layout_marginEnd="8dp"
-                            android:maxWidth="200dp" />
+                            android:maxWidth="200dp"
+                            tools:ignore="Autofill,HardcodedText,TextFields"/>
 
                         <Button
                             android:layout_width="wrap_content"
@@ -238,7 +254,8 @@
                             android:background="@drawable/green_rounded_bg"
                             android:paddingHorizontal="12dp"
                             android:minWidth="48dp"
-                            android:minHeight="48dp" />
+                            android:minHeight="48dp"
+                            tools:ignore="HardcodedText,SmallSp"/>
 
                     </LinearLayout>
 
@@ -257,7 +274,8 @@
                         android:text="Member 4"
                         android:textSize="16sp"
                         android:textColor="#333333"
-                        android:layout_marginBottom="8dp" />
+                        android:layout_marginBottom="8dp"
+                        tools:ignore="HardcodedText"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -274,7 +292,8 @@
                             android:paddingHorizontal="12dp"
                             android:paddingVertical="6dp"
                             android:layout_marginEnd="8dp"
-                            android:textSize="12sp" />
+                            android:textSize="12sp"
+                            tools:ignore="HardcodedText"/>
 
                         <EditText
                             android:layout_width="0dp"
@@ -285,7 +304,8 @@
                             android:paddingHorizontal="8dp"
                             android:background="@drawable/edittext_bg"
                             android:layout_marginEnd="8dp"
-                            android:maxWidth="200dp" />
+                            android:maxWidth="200dp"
+                            tools:ignore="Autofill,HardcodedText,TextFields"/>
 
                         <Button
                             android:layout_width="wrap_content"
@@ -296,7 +316,8 @@
                             android:background="@drawable/green_rounded_bg"
                             android:paddingHorizontal="12dp"
                             android:minWidth="48dp"
-                            android:minHeight="48dp" />
+                            android:minHeight="48dp"
+                            tools:ignore="HardcodedText,SmallSp"/>
 
                     </LinearLayout>
 
@@ -314,7 +335,8 @@
                         android:text="Member 5"
                         android:textSize="16sp"
                         android:textColor="#333333"
-                        android:layout_marginBottom="8dp" />
+                        android:layout_marginBottom="8dp"
+                        tools:ignore="HardcodedText"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -331,7 +353,8 @@
                             android:paddingHorizontal="12dp"
                             android:paddingVertical="6dp"
                             android:layout_marginEnd="8dp"
-                            android:textSize="12sp" />
+                            android:textSize="12sp"
+                            tools:ignore="HardcodedText"/>
 
                         <EditText
                             android:layout_width="0dp"
@@ -342,7 +365,8 @@
                             android:paddingHorizontal="8dp"
                             android:background="@drawable/edittext_bg"
                             android:layout_marginEnd="8dp"
-                            android:maxWidth="200dp" />
+                            android:maxWidth="200dp"
+                            tools:ignore="Autofill,HardcodedText,TextFields"/>
 
                         <Button
                             android:layout_width="wrap_content"
@@ -353,7 +377,8 @@
                             android:background="@drawable/green_rounded_bg"
                             android:paddingHorizontal="12dp"
                             android:minWidth="48dp"
-                            android:minHeight="48dp" />
+                            android:minHeight="48dp"
+                            tools:ignore="HardcodedText,SmallSp"/>
 
                     </LinearLayout>
 

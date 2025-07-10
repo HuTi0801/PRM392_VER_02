@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -15,7 +16,8 @@
         android:text="Tên đề tài"
         android:textColor="#000000"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:ignore="HardcodedText"/>
 
     <!-- Lý do từ chối -->
     <TextView
@@ -25,6 +27,7 @@
         android:text="Lý do từ chối: Thiếu thông tin minh chứng"
         android:textColor="#B00020"
         android:textSize="14sp"
-        android:layout_marginTop="6dp"/>
+        android:layout_marginTop="6dp"
+        tools:ignore="HardcodedText"/>
 
 </LinearLayout>

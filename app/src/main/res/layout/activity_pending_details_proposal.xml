@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:background="#FFFBF5"
-    tools:context=".PendingDetailsProposalActivity">
+    tools:context=".features.proposal.PendingDetailsProposalActivity">
 
 
     <LinearLayout
@@ -30,7 +30,8 @@
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="#000000"
-            android:layout_margin="16dp"/>
+            android:layout_margin="16dp"
+            tools:ignore="HardcodedText"/>
 
         <!-- Danh sách đề tài -->
         <ListView

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="12dp"
     android:background="#FFFBF5"
@@ -14,7 +15,8 @@
         android:text="Tên đề tài"
         android:textColor="#000000"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:ignore="HardcodedText"/>
 
     <TextView
         android:id="@+id/tvApprovedDate"
@@ -23,6 +25,7 @@
         android:text="Ngày duyệt: 01/07/2025"
         android:textColor="#666666"
         android:textSize="14sp"
-        android:layout_marginTop="4dp"/>
+        android:layout_marginTop="4dp"
+        tools:ignore="HardcodedText"/>
 
 </LinearLayout>

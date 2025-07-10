@@ -1,4 +1,4 @@
-package com.example.mentorlink_project;
+package com.example.mentorlink_project.features.login;
 
 import android.os.Bundle;
 
@@ -8,13 +8,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class ApprovedDetailsProposalActivity extends AppCompatActivity {
+import com.example.mentorlink_project.R;
+
+public class LoginActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_approved_details_proposal);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.approved_details_proposal), (v, insets) -> {
+        setContentView(R.layout.activity_login);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.login), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
