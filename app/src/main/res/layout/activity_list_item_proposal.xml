@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="12dp"
     android:background="#FFFBF5"
@@ -14,7 +15,8 @@
         android:text="Tên đề tài"
         android:textColor="#000000"
         android:textSize="16sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        tools:ignore="HardcodedText"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,7 +32,8 @@
             android:text="Approve"
             android:backgroundTint="#FF9800"
             android:textColor="#FFFFFF"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="8dp"
+            tools:ignore="ButtonStyle,HardcodedText"/>
 
         <Button
             android:id="@+id/btnReject"
@@ -38,7 +41,8 @@
             android:layout_height="wrap_content"
             android:text="Reject"
             android:backgroundTint="#FF9800"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF"
+            tools:ignore="ButtonStyle,HardcodedText"/>
     </LinearLayout>
 
 </LinearLayout>
