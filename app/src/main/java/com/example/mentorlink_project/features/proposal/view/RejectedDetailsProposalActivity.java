@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,9 +18,18 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.mentorlink_project.R;
+import com.example.mentorlink_project.data.entities.ProjectEntity;
+import com.example.mentorlink_project.data.repositories.ProjectRepository;
+import com.example.mentorlink_project.features.proposal.adapter.RejectedDetailsProposalAdapter;
+import com.example.mentorlink_project.features.proposal.contract.RejectedDetailsProposalContract;
+import com.example.mentorlink_project.features.proposal.presenter.RejectedDetailsProposalPresenter;
 
-public class RejectedDetailsProposalActivity extends AppCompatActivity {
+import java.util.List;
 
+public class RejectedDetailsProposalActivity extends AppCompatActivity implements RejectedDetailsProposalContract.View {
+    private ListView listView;
+    private RejectedDetailsProposalPresenter rejectedDetailsProposalPresenter;
+    private RejectedDetailsProposalAdapter rejectedDetailsProposalAdapter;
     DrawerLayout drawerLayout;
     ImageButton btnMenu;
     Button btnProject, btnPending, btnApproved, btnRejected;;
@@ -78,5 +89,20 @@ public class RejectedDetailsProposalActivity extends AppCompatActivity {
             Intent intent = new Intent(this, RejectedDetailsProposalActivity.class);
             startActivity(intent);
         });
+
+        listView = findViewById(R.id.lvRejectedProposals);
+        rejectedDetailsProposalPresenter = new RejectedDetailsProposalPresenter(this, new ProjectRepository(this));
+        rejectedDetailsProposalPresenter.loadRejectedProposals();
+    }
+
+    @Override
+    public void showRejectedProposals(List<ProjectEntity> proposalList) {
+        rejectedDetailsProposalAdapter = new RejectedDetailsProposalAdapter(this, proposalList);
+        listView.setAdapter(rejectedDetailsProposalAdapter);
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

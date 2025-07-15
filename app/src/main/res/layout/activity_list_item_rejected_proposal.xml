@@ -24,7 +24,6 @@
         android:id="@+id/tvRejectReason"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lý do từ chối: Thiếu thông tin minh chứng"
         android:textColor="#B00020"
         android:textSize="14sp"
         android:layout_marginTop="6dp"
