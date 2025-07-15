@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/create_proposal"
@@ -17,53 +18,36 @@
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="My Capstone Project"
+            android:text="Create Proposal"
             android:textSize="24sp"
             android:textStyle="bold"
             android:gravity="center"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            tools:ignore="HardcodedText" />
 
-        <!-- Topic -->
+        <!-- Proposal Title -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Topic"
+            android:text="Proposal Title"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:layout_marginBottom="4dp"/>
+            android:layout_marginBottom="4dp"
+            tools:ignore="HardcodedText" />
 
         <EditText
-            android:id="@+id/edt_topic"
+            android:id="@+id/edt_proposal_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/orange_rounded_bg"
-            android:hint="Propose a Topic"
+            android:hint="Enter proposal title"
             android:padding="10dp"
             android:textColor="#000000"
             android:textColorHint="#222222"
             android:minHeight="48dp"
-            android:minWidth="48dp"/>
-
-        <!-- Major -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Major"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="4dp"/>
-
-        <Spinner
-            android:id="@+id/spinner_lecturer_1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="48dp"
             android:minWidth="48dp"
-            android:background="@drawable/orange_rounded_bg"
-            android:padding="10dp" />
-
+            tools:ignore="Autofill,HardcodedText,TextFields"/>
 
         <!-- Description -->
         <TextView
@@ -73,19 +57,71 @@
             android:textStyle="bold"
             android:textSize="16sp"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="4dp"/>
+            android:layout_marginBottom="4dp"
+            tools:ignore="HardcodedText" />
 
         <EditText
             android:id="@+id/edt_description"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="120dp"
             android:background="@drawable/orange_rounded_bg"
-            android:hint="A short description"
+            android:hint="Enter description"
             android:padding="10dp"
             android:textColor="#000000"
             android:textColorHint="#222222"
-            android:minHeight="48dp"
-            android:minWidth="48dp"/>
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            tools:ignore="Autofill,HardcodedText,TextFields"/>
+
+        <!-- Attach File -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Attach File"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="4dp"
+            tools:ignore="HardcodedText" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_attach_file"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose File"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/tv_file_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_marginStart="12dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                tools:ignore="HardcodedText"/>
+        </LinearLayout>
+
+        <!-- Major -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Major"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="4dp"
+            tools:ignore="HardcodedText" />
+
+        <Spinner
+            android:id="@+id/spinner_major"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <!-- Lecturer -->
         <TextView
@@ -95,43 +131,23 @@
             android:textStyle="bold"
             android:textSize="16sp"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="4dp"/>
+            android:layout_marginBottom="4dp"
+            tools:ignore="HardcodedText" />
 
         <Spinner
-            android:id="@+id/spinner_lecturer_2"
+            android:id="@+id/spinner_lecturer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Send Button -->
+        <Button
+            android:id="@+id/btn_send"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:minWidth="48dp"
-            android:background="@drawable/orange_rounded_bg"
-            android:padding="10dp" />
-
-
-        <!-- Buttons -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="end"
-            android:layout_marginTop="24dp">
-
-            <Button
-                android:id="@+id/btn_clear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Clear"
-                android:background="#FFFFFF"
-                android:textColor="#000000"
-                android:layout_marginEnd="12dp"/>
-
-            <Button
-                android:id="@+id/btn_save"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Save"
-                android:background="#5A5C60"
-                android:textColor="#FFFFFF"/>
-        </LinearLayout>
-
+            android:text="Send"
+            android:background="#5A5C60"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="24dp"
+            tools:ignore="ButtonStyle,HardcodedText"/>
     </LinearLayout>
 </ScrollView>
