@@ -1,4 +1,4 @@
-package com.example.mentorlink_project.features.proposal;
+package com.example.mentorlink_project.features.proposal.view;
 
 import android.os.Bundle;
 

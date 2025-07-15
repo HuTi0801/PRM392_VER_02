@@ -1,4 +1,4 @@
-package com.example.mentorlink_project.features.dashboard;
+package com.example.mentorlink_project.features.dashboard.view;
 
 import android.os.Bundle;
 
