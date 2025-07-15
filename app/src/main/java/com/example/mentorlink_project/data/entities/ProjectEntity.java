@@ -1,6 +1,8 @@
 package com.example.mentorlink_project.data.entities;
 
-public class ProjectEntity {
+import java.io.Serializable;
+
+public class ProjectEntity implements Serializable {
     private int id;
     private int groupId;
     private String lectureCode;

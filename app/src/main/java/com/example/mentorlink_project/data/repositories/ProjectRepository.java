@@ -77,13 +77,7 @@ public class ProjectRepository {
         List<ProjectEntity> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        Cursor cursor = db.query(
-                ProjectDao.TABLE_NAME,
-                null,
-                "status = ?",
-                new String[]{status},
-                null, null, null
-        );
+        Cursor cursor = db.rawQuery("SELECT * FROM Project WHERE TRIM(status) = ?", new String[]{status.trim()});
 
         while (cursor.moveToNext()) {
             ProjectEntity p = new ProjectEntity();

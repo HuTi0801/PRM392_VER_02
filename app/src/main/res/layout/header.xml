@@ -5,17 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#FF5722"
-    android:padding="12dp">
+    android:padding="12dp"
+    tools:ignore="ExtraText">
 
-    <!-- Logo or Icon -->
-    <ImageView
-        android:id="@+id/img_logo"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:src="@drawable/ic_launcher_foreground"
+    <ImageButton
+        android:id="@+id/btn_menu"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        tools:ignore="ContentDescription" />
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/ic_menu_sort_by_size"
+        android:contentDescription="Menu"
+        tools:ignore="HardcodedText" />
 
     <!-- Title -->
     <TextView
@@ -26,7 +27,7 @@
         android:textColor="@android:color/white"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:layout_toEndOf="@id/img_logo"
+        android:layout_toEndOf="@id/btn_menu"
         android:layout_centerVertical="true"
         android:layout_marginStart="8dp"
         tools:ignore="HardcodedText" />

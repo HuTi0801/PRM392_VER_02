@@ -1,6 +1,7 @@
 package com.example.mentorlink_project.features.proposal.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.example.mentorlink_project.R;
 import com.example.mentorlink_project.data.entities.ProjectEntity;
 import com.example.mentorlink_project.features.proposal.contract.PendingDetailsProposalContract;
+import com.example.mentorlink_project.features.proposal.view.ProposalDetailActivity;
 
 import java.util.List;
 
@@ -65,9 +67,9 @@ public class PendingDetailProposalAdapter extends BaseAdapter {
         // (Tuỳ chọn) Mở chi tiết đề tài khi click item
         convertView.setOnClickListener(v -> {
             // TODO: mở ProposalDetailActivity nếu muốn
-            // Intent intent = new Intent(context, ProposalDetailActivity.class);
-            // intent.putExtra("project_id", project.getId());
-            // context.startActivity(intent);
+            Intent intent = new Intent(context, ProposalDetailActivity.class);
+            intent.putExtra("project_id", project.getId());
+            context.startActivity(intent);
         });
 
         return convertView;
