@@ -67,4 +67,39 @@ public class AccountRepository {
         db.close();
         return list;
     }
+
+    public List<String> getAllMajors() {
+        List<String> majors = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT DISTINCT major_name FROM " + AccountDao.TABLE_NAME, null);
+        while (cursor.moveToNext()) {
+            String major = cursor.getString(cursor.getColumnIndexOrThrow("major_name"));
+            if (major != null && !major.isEmpty()) {
+                majors.add(major);
+            }
+        }
+        cursor.close();
+        db.close();
+        return majors;
+    }
+
+    public List<String> getLecturersByMajor(String major) {
+        List<String> lecturers = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(
+                AccountDao.TABLE_NAME,
+                new String[]{"userCode", "full_name"},
+                "role = ? AND major_name = ?",
+                new String[]{"LECTURER", major},
+                null, null, null
+        );
+        while (cursor.moveToNext()) {
+            String code = cursor.getString(cursor.getColumnIndexOrThrow("userCode"));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow("full_name"));
+            lecturers.add(name + " (" + code + ")");
+        }
+        cursor.close();
+        db.close();
+        return lecturers;
+    }
 }

@@ -1,26 +1,65 @@
 package com.example.mentorlink_project.features.proposal.view;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
 
 import com.example.mentorlink_project.R;
+import com.example.mentorlink_project.data.entities.ProjectEntity;
+import com.example.mentorlink_project.features.proposal.contract.ProposalDetailContract;
+import com.example.mentorlink_project.features.proposal.presenter.ProposalDetailPresenter;
 
-public class ProposalDetailActivity extends AppCompatActivity {
+import java.util.List;
+
+public class ProposalDetailActivity extends AppCompatActivity implements ProposalDetailContract.View {
+    private ProposalDetailPresenter presenter;
+    private Button btnAddProposal, btnRemoveProposal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_proposal_details);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.proposal_details), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+        btnAddProposal = findViewById(R.id.btn_add_proposal);
+        btnRemoveProposal = findViewById(R.id.btn_remove_proposal);
+
+        // Example: get from intent/session
+        String userRole = "LEADER"; // or "MEMBER", "LECTURER"
+        int groupId = 1;
+
+        presenter = new ProposalDetailPresenter(this, this);
+        presenter.loadProposal(groupId, userRole);
+
+        btnAddProposal.setOnClickListener(v -> presenter.onAddProposalClicked());
+        btnRemoveProposal.setOnClickListener(v -> presenter.onRemoveProposalClicked());
+    }
+
+    @Override
+    public void showProposalDetails(ProjectEntity project) {
+        // Set all TextViews with project info or clear if null
+    }
+
+    @Override
+    public void showAddProposalButton(boolean show) {
+        btnAddProposal.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void showRemoveProposalButton(boolean show) {
+        btnRemoveProposal.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void showMessage(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showMembers(List<String> members) {
+        // Set up RecyclerView adapter
     }
 }

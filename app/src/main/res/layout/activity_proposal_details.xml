@@ -29,7 +29,7 @@
         android:layout_marginBottom="16dp"
         tools:ignore="HardcodedText"/>
 
-    <!-- Project Status Section Only -->
+    <!-- Project Status Section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -53,6 +53,7 @@
             tools:ignore="HardcodedText"/>
 
         <TextView
+            android:id="@+id/tv_proposal_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Proposal Status: Approved"
@@ -62,6 +63,7 @@
             tools:ignore="HardcodedText"/>
 
         <TextView
+            android:id="@+id/tv_assigned_lecturer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Assigned Lecturer: Mr. Hoang Nguyen The"
@@ -70,6 +72,7 @@
             tools:ignore="HardcodedText"/>
 
         <TextView
+            android:id="@+id/tv_comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Comment: Your project has already been approved"
@@ -78,6 +81,7 @@
             tools:ignore="HardcodedText"/>
 
         <TextView
+            android:id="@+id/tv_project_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Project Progress: 20%"
@@ -86,21 +90,38 @@
             tools:ignore="HardcodedText"/>
 
         <ProgressBar
+            android:id="@+id/progress_project"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:progress="20"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_marginTop="4dp" />
 
+        <!-- Add Proposal Button -->
         <Button
-            android:id="@+id/btn_project_details"
+            android:id="@+id/btn_add_proposal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="View Project Details"
+            android:text="Add Proposal"
             android:layout_marginTop="24dp"
-            android:backgroundTint="@android:color/holo_green_light"
+            android:backgroundTint="@android:color/holo_blue_light"
             android:textColor="#000000"
             android:textStyle="bold"
+            android:visibility="gone"
             tools:ignore="HardcodedText" />
+
+        <!-- Remove Proposal Button -->
+        <Button
+            android:id="@+id/btn_remove_proposal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Remove Proposal"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="@android:color/holo_red_light"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:ignore="HardcodedText" />
+
     </LinearLayout>
 </LinearLayout>
