@@ -21,7 +21,7 @@
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="My Capstone Project"
+        android:text="Proposal Details"
         android:textSize="24sp"
         android:textStyle="bold"
         android:gravity="center"
@@ -29,11 +29,10 @@
         android:layout_marginBottom="16dp"
         tools:ignore="HardcodedText"/>
 
-    <!-- Project Status Section -->
+    <!-- Project Info Section -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
         android:background="#F5F5F5"
@@ -42,62 +41,93 @@
         android:clipToPadding="false"
         android:backgroundTint="#F5F5F5">
 
+        <!-- Topic -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Project Status"
+            android:text="Topic"
             android:textStyle="bold"
-            android:textSize="20sp"
-            android:layout_marginBottom="12dp"
-            android:textColor="#000000"
+            android:textSize="16sp"
+            android:layout_marginBottom="4dp"
             tools:ignore="HardcodedText"/>
+        <TextView
+            android:id="@+id/tv_topic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"/>
 
+        <!-- Lecturer -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lecturer"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginBottom="4dp"
+            tools:ignore="HardcodedText"/>
+        <TextView
+            android:id="@+id/tv_lecturer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Status -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Status"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginBottom="4dp"
+            tools:ignore="HardcodedText"/>
         <TextView
             android:id="@+id/tv_proposal_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Proposal Status: Approved"
-            android:textColor="@android:color/holo_green_dark"
+            android:text=""
             android:textSize="16sp"
-            android:layout_marginBottom="8dp"
-            tools:ignore="HardcodedText"/>
+            android:layout_marginBottom="8dp"/>
 
+        <!-- Comment (Reject Reason) -->
         <TextView
-            android:id="@+id/tv_assigned_lecturer"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Assigned Lecturer: Mr. Hoang Nguyen The"
+            android:text="Comment"
+            android:textStyle="bold"
             android:textSize="16sp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="4dp"
             tools:ignore="HardcodedText"/>
-
         <TextView
             android:id="@+id/tv_comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Comment: Your project has already been approved"
+            android:text=""
             android:textSize="16sp"
-            android:layout_marginBottom="8dp"
-            tools:ignore="HardcodedText"/>
+            android:layout_marginBottom="8dp"/>
 
+        <!-- Document URL -->
         <TextView
-            android:id="@+id/tv_project_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Project Progress: 20%"
+            android:text="Document"
+            android:textStyle="bold"
             android:textSize="16sp"
-            android:layout_marginTop="16dp"
+            android:layout_marginBottom="4dp"
             tools:ignore="HardcodedText"/>
-
-        <ProgressBar
-            android:id="@+id/progress_project"
+        <TextView
+            android:id="@+id/tv_document_url"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:progress="20"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_marginTop="4dp" />
+            android:text=""
+            android:textSize="16sp"
+            android:autoLink="web"
+            android:layout_marginBottom="8dp"/>
 
-        <!-- Add Proposal Button -->
+        <!-- Add/Remove Proposal Buttons (unchanged) -->
         <Button
             android:id="@+id/btn_add_proposal"
             android:layout_width="match_parent"
@@ -110,7 +140,6 @@
             android:visibility="gone"
             tools:ignore="HardcodedText" />
 
-        <!-- Remove Proposal Button -->
         <Button
             android:id="@+id/btn_remove_proposal"
             android:layout_width="match_parent"
@@ -122,6 +151,5 @@
             android:textStyle="bold"
             android:visibility="gone"
             tools:ignore="HardcodedText" />
-
     </LinearLayout>
 </LinearLayout>
