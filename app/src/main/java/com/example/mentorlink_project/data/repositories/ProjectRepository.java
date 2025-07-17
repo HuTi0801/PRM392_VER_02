@@ -97,4 +97,25 @@ public class ProjectRepository {
         db.close();
         return list;
     }
+
+    public ProjectEntity getProjectById(int projectId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(ProjectDao.TABLE_NAME, null, "id = ?", new String[]{String.valueOf(projectId)}, null, null, null);
+        ProjectEntity project = null;
+        if (cursor.moveToFirst()) {
+            project = new ProjectEntity();
+            project.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+            project.setGroupId(cursor.getInt(cursor.getColumnIndexOrThrow("group_id")));
+            project.setLectureCode(cursor.getString(cursor.getColumnIndexOrThrow("lecture_code")));
+            project.setTopic(cursor.getString(cursor.getColumnIndexOrThrow("topic")));
+            project.setDescription(cursor.getString(cursor.getColumnIndexOrThrow("description")));
+            project.setStatus(cursor.getString(cursor.getColumnIndexOrThrow("status")));
+            project.setCreatedAt(cursor.getString(cursor.getColumnIndexOrThrow("created_at")));
+            project.setRejectReason(cursor.getString(cursor.getColumnIndexOrThrow("reject_reason")));
+            project.setDocumentUrl(cursor.getString(cursor.getColumnIndexOrThrow("document_url")));
+        }
+        cursor.close();
+        db.close();
+        return project;
+    }
 }

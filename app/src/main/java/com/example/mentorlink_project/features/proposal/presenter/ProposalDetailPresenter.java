@@ -61,6 +61,11 @@ public class ProposalDetailPresenter implements ProposalDetailContract.Presenter
         }
     }
 
+    public void loadProposalById(int projectId) {
+        currentProject = projectRepo.getProjectById(projectId);
+        view.showProposalDetails(currentProject);
+    }
+
     @Override
     public void onAddProposalClicked() {
         // Navigate to Create Proposal Activity (handled in Activity)
