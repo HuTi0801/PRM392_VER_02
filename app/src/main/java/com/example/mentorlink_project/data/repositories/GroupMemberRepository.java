@@ -46,7 +46,7 @@ public class GroupMemberRepository {
         db.close();
         return list;
     }
-
+  
     /**
      * Checks if the given user is already a member of any group.
      * @param userCode The student/user code to check.
