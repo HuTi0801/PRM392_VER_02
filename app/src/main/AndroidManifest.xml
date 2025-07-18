@@ -58,6 +58,7 @@
             android:name=".features.group.view.GroupListActivity"
             android:exported="true">
         </activity>
+
     </application>
 
 </manifest>

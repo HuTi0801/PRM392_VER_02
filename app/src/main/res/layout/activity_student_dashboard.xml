@@ -31,18 +31,6 @@
             tools:ignore="HardcodedText" />
 
         <Button
-            android:id="@+id/btnCreateGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tạo nhóm mới"
-            app:backgroundTint="@null"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:background="@drawable/bg_btn_orange"
-            android:layout_marginBottom="16dp"
-            tools:ignore="HardcodedText" />
-
-        <Button
             android:id="@+id/btnGroupInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
