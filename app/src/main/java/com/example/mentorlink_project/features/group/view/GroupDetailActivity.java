@@ -1,13 +1,19 @@
 package com.example.mentorlink_project.features.group.view;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 import com.example.mentorlink_project.R;
 import com.example.mentorlink_project.data.entities.AccountEntity;
 import com.example.mentorlink_project.data.entities.GroupEntity;
@@ -17,35 +23,53 @@ import com.example.mentorlink_project.data.repositories.GroupMemberRepository;
 import com.example.mentorlink_project.data.repositories.GroupRepository;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class GroupDetailActivity extends AppCompatActivity {
     private EditText edtGroupName;
-    private EditText edtMemberId1, edtMemberId2, edtMemberId3, edtMemberId4, edtMemberId5;
-    private TextView tvMemberName1, tvMemberName2, tvMemberName3, tvMemberName4, tvMemberName5;
-    private Button btnCreateGroup;
+    private EditText[] memberIdFields;
+    private TextView[] memberNameViews;
+    private Button[] removeButtons;
+    private Button btnCreateGroup, btnSave, btnClear;
     private String userCode;
     private GroupMemberRepository groupMemberRepo;
     private GroupRepository groupRepo;
     private AccountRepository accountRepo;
-    private Button btnEditName, btnRemove2, btnRemove3, btnRemove4, btnRemove5, btnTransferLeader, btnAddMember;
-    private boolean isEditMode = false;
-    private int groupId = -1; // Initialize with invalid ID
+    private Button btnTransferLeader;
+    private int groupId = -1;
+    private boolean isCreatingNewGroup = false;
+    private Set<String> originalMemberIds = new HashSet<>();
+
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private boolean isCurrentUserLeader = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_details);
 
-        try {
-            initializeRepositories();
-            setupUserInfo();
-            initializeViews();
-            checkUserGroupStatus();
-        } catch (Exception e) {
-            Toast.makeText(this, "Error initializing activity: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            finish();
-        }
+        initializeRepositories();
+        setupUserInfo();
+        initializeViews();
+        checkUserGroupStatus();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("GROUP_ID", groupId);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        executorService.shutdown();
     }
 
     private void initializeRepositories() {
@@ -57,734 +81,586 @@ public class GroupDetailActivity extends AppCompatActivity {
     private void setupUserInfo() {
         userCode = getIntent().getStringExtra("USER_CODE");
         if (userCode == null || userCode.trim().isEmpty()) {
-            Toast.makeText(this, "Invalid user information", Toast.LENGTH_SHORT).show();
+            showToast("Invalid user information");
             finish();
             return;
+        }
+
+        AccountEntity currentUser = accountRepo.getAccountByUserCode(userCode);
+        if (currentUser != null && "LECTURER".equalsIgnoreCase(currentUser.getRole())) {
+            showToast("Lecturers cannot access group management");
+            finish();
         }
     }
 
     private void initializeViews() {
         edtGroupName = findViewById(R.id.edt_group_name);
-        edtMemberId1 = findViewById(R.id.edt_member_id_1);
-        edtMemberId2 = findViewById(R.id.edt_member_id_2);
-        edtMemberId3 = findViewById(R.id.edt_member_id_3);
-        edtMemberId4 = findViewById(R.id.edt_member_id_4);
-        edtMemberId5 = findViewById(R.id.edt_member_id_5);
 
-        tvMemberName1 = findViewById(R.id.tv_member_name_1);
-        tvMemberName2 = findViewById(R.id.tv_member_name_2);
-        tvMemberName3 = findViewById(R.id.tv_member_name_3);
-        tvMemberName4 = findViewById(R.id.tv_member_name_4);
-        tvMemberName5 = findViewById(R.id.tv_member_name_5);
+        memberIdFields = new EditText[]{
+                findViewById(R.id.edt_member_id_1),
+                findViewById(R.id.edt_member_id_2),
+                findViewById(R.id.edt_member_id_3),
+                findViewById(R.id.edt_member_id_4),
+                findViewById(R.id.edt_member_id_5)
+        };
+
+        memberNameViews = new TextView[]{
+                findViewById(R.id.tv_member_name_1),
+                findViewById(R.id.tv_member_name_2),
+                findViewById(R.id.tv_member_name_3),
+                findViewById(R.id.tv_member_name_4),
+                findViewById(R.id.tv_member_name_5)
+        };
+
+        removeButtons = new Button[]{
+                null,
+                findViewById(R.id.btn_remove_2),
+                findViewById(R.id.btn_remove_3),
+                findViewById(R.id.btn_remove_4),
+                findViewById(R.id.btn_remove_5)
+        };
 
         btnCreateGroup = findViewById(R.id.btn_create_group);
-        btnEditName = findViewById(R.id.btn_edit_group_name);
-        btnRemove2 = findViewById(R.id.btn_remove_2);
-        btnRemove3 = findViewById(R.id.btn_remove_3);
-        btnRemove4 = findViewById(R.id.btn_remove_4);
-        btnRemove5 = findViewById(R.id.btn_remove_5);
+        btnSave = findViewById(R.id.btn_save);
+        btnClear = findViewById(R.id.btn_clear);
         btnTransferLeader = findViewById(R.id.btn_transfer_leader_1);
-        btnAddMember = findViewById(R.id.btn_add_member);
 
-        // Set up leader information
-        AccountEntity leader = accountRepo.getAccountByUserCode(userCode);
-        if (leader != null) {
-            edtMemberId1.setText(userCode);
-            edtMemberId1.setEnabled(false);
-            tvMemberName1.setText(leader.getFullName() + " (Leader)");
+        AccountEntity currentUser = accountRepo.getAccountByUserCode(userCode);
+        if (currentUser != null) {
+            memberIdFields[0].setText(userCode);
+            memberIdFields[0].setEnabled(false);
+            memberNameViews[0].setText(currentUser.getFullName() + " (You - Leader)");
         }
 
-        setupButtons();
+        setupButtonListeners();
+        setupTextWatchers();
     }
 
-    private void setupButtons() {
-        if (btnEditName != null) {
-            btnEditName.setOnClickListener(v -> toggleEditMode());
-        }
-        if (btnRemove2 != null) {
-            btnRemove2.setOnClickListener(v -> removeMember(2));
-        }
-        if (btnRemove3 != null) {
-            btnRemove3.setOnClickListener(v -> removeMember(3));
-        }
-        if (btnRemove4 != null) {
-            btnRemove4.setOnClickListener(v -> removeMember(4));
-        }
-        if (btnRemove5 != null) {
-            btnRemove5.setOnClickListener(v -> removeMember(5));
-        }
-        if (btnTransferLeader != null) {
-            btnTransferLeader.setOnClickListener(v -> transferLeaderRole());
-        }
-        if (btnAddMember != null) {
-            btnAddMember.setOnClickListener(v -> addMember());
+    private void setupButtonListeners() {
+        btnCreateGroup.setOnClickListener(v -> validateAndCreateGroup());
+        btnSave.setOnClickListener(v -> saveChanges());
+        btnClear.setOnClickListener(v -> clearAllFields());
+        btnTransferLeader.setOnClickListener(v -> transferLeaderRole());
+
+        for (int i = 1; i < removeButtons.length; i++) {
+            final int index = i;
+            removeButtons[i].setOnClickListener(v -> removeMember(index));
         }
     }
 
-    /**
-     * Check if the current user is the leader of the group
-     */
-    private boolean isCurrentUserLeader() {
-        try {
-            if (groupId == -1) return false;
-
-            List<GroupMemberEntity> members = groupMemberRepo.getMembersByGroupId(groupId);
-            if (members != null) {
-                for (GroupMemberEntity member : members) {
-                    if (member.getUserCode().equals(userCode) && "LEADER".equals(member.getRoles())) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * Update UI elements based on leader permissions
-     */
-    private void updateUIBasedOnLeaderPermissions() {
-        boolean isLeader = isCurrentUserLeader();
-
-        // Show/hide management buttons based on leader status
-        if (btnEditName != null) {
-            btnEditName.setVisibility(isLeader ? View.VISIBLE : View.GONE);
-        }
-        if (btnRemove2 != null) {
-            btnRemove2.setVisibility(isLeader ? View.VISIBLE : View.GONE);
-        }
-        if (btnRemove3 != null) {
-            btnRemove3.setVisibility(isLeader ? View.VISIBLE : View.GONE);
-        }
-        if (btnRemove4 != null) {
-            btnRemove4.setVisibility(isLeader ? View.VISIBLE : View.GONE);
-        }
-        if (btnRemove5 != null) {
-            btnRemove5.setVisibility(isLeader ? View.VISIBLE : View.GONE);
-        }
-        if (btnTransferLeader != null) {
-            btnTransferLeader.setVisibility(isLeader ? View.VISIBLE : View.GONE);
-        }
-        if (btnAddMember != null) {
-            btnAddMember.setVisibility(isLeader ? View.VISIBLE : View.GONE);
-        }
-
-        // Update remove buttons visibility based on member count
-        if (isLeader) {
-            updateRemoveButtonsVisibility();
-        }
-    }
-
-    private void checkUserGroupStatus() {
-        try {
-            if (groupMemberRepo.isUserInAnyGroup(userCode)) {
-                // User already has a group - Get group ID and show details
-                groupId = groupMemberRepo.getGroupIdByUserCode(userCode);
-                if (groupId != -1) {
-                    showExistingGroupDetails(groupId);
-                    updateUIBasedOnLeaderPermissions();
-                } else {
-                    Toast.makeText(this, "Error loading group information", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            } else {
-                // User has no group - Show create group interface
-                setupGroupCreation();
-            }
-        } catch (Exception e) {
-            Toast.makeText(this, "Error checking group status: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            finish();
-        }
-    }
-
-    private void toggleEditMode() {
-        // Check leader permission
-        if (!isCurrentUserLeader()) {
-            Toast.makeText(this, "Only group leaders can edit group name", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        isEditMode = !isEditMode;
-        if (btnEditName != null) {
-            btnEditName.setText(isEditMode ? "Save" : "Edit");
-        }
-        if (edtGroupName != null) {
-            edtGroupName.setEnabled(isEditMode);
-        }
-
-        if (isEditMode) {
-            if (edtGroupName != null) {
-                edtGroupName.requestFocus();
-            }
-        } else {
-            // Save changes
-            if (edtGroupName != null) {
-                updateGroupName(edtGroupName.getText().toString().trim());
-            }
-        }
-    }
-
-    private void updateGroupName(String newName) {
-        // Check leader permission
-        if (!isCurrentUserLeader()) {
-            Toast.makeText(this, "Only group leaders can update group name", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (newName.isEmpty()) {
-            Toast.makeText(this, "Group name cannot be empty", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        try {
-            GroupEntity group = groupRepo.getGroupById(groupId);
-            if (group != null) {
-                group.setName(newName);
-                groupRepo.updateGroup(group);
-                Toast.makeText(this, "Group name updated", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Error updating group name", Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            Toast.makeText(this, "Error updating group: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void removeMember(int memberIndex) {
-        // Check leader permission
-        if (!isCurrentUserLeader()) {
-            Toast.makeText(this, "Only group leaders can remove members", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        EditText memberField = null;
-        TextView nameField = null;
-        switch (memberIndex) {
-            case 2:
-                memberField = edtMemberId2;
-                nameField = tvMemberName2;
-                break;
-            case 3:
-                memberField = edtMemberId3;
-                nameField = tvMemberName3;
-                break;
-            case 4:
-                memberField = edtMemberId4;
-                nameField = tvMemberName4;
-                break;
-            case 5:
-                memberField = edtMemberId5;
-                nameField = tvMemberName5;
-                break;
-        }
-
-        if (memberField != null && !memberField.getText().toString().isEmpty()) {
-            // Show confirmation dialog
-            EditText finalMemberField = memberField;
-            TextView finalNameField = nameField;
-            new AlertDialog.Builder(this)
-                    .setTitle("Remove Member")
-                    .setMessage("Are you sure you want to remove this member from the group?")
-                    .setPositiveButton("Yes", (dialog, which) -> {
-                        try {
-                            String userCodeToRemove = finalMemberField.getText().toString();
-                            groupMemberRepo.removeMember(groupId, userCodeToRemove);
-
-                            // Clear fields and shift remaining members up
-                            finalMemberField.setText("");
-                            if (finalNameField != null) finalNameField.setText("");
-                            rearrangeMemberFields();
-
-                            // Update remove button visibility
-                            updateRemoveButtonsVisibility();
-                            Toast.makeText(this, "Member removed successfully", Toast.LENGTH_SHORT).show();
-                        } catch (Exception e) {
-                            Toast.makeText(this, "Error removing member: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .setNegativeButton("No", null)
-                    .show();
-        }
-    }
-
-    private void addMember() {
-        // Check leader permission
-        if (!isCurrentUserLeader()) {
-            Toast.makeText(this, "Only group leaders can add members", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Check if group is full
-        int currentMemberCount = countMembers();
-        if (currentMemberCount >= 5) {
-            Toast.makeText(this, "Group is full (maximum 5 members)", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Create input dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add New Member");
-        builder.setMessage("Enter student ID:");
-
-        final EditText input = new EditText(this);
-        input.setHint("Student ID");
-        builder.setView(input);
-
-        builder.setPositiveButton("Add", (dialog, which) -> {
-            String newMemberCode = input.getText().toString().trim();
-            if (!newMemberCode.isEmpty()) {
-                validateAndAddMember(newMemberCode);
-            } else {
-                Toast.makeText(this, "Please enter a student ID", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        builder.setNegativeButton("Cancel", null);
-        builder.show();
-    }
-
-    private void validateAndAddMember(String newMemberCode) {
-        try {
-            // Check if user exists
-            AccountEntity newMember = accountRepo.getAccountByUserCode(newMemberCode);
-            if (newMember == null) {
-                Toast.makeText(this, "Student ID not found: " + newMemberCode, Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            // Check if user is already in any group
-            if (groupMemberRepo.isUserInAnyGroup(newMemberCode)) {
-                Toast.makeText(this, "Student " + newMemberCode + " is already in a group", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            // Check if trying to add self
-            if (newMemberCode.equals(userCode)) {
-                Toast.makeText(this, "You are already the leader of this group", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            // Add member to database
-            GroupMemberEntity member = new GroupMemberEntity();
-            member.setGroupId(groupId);
-            member.setUserCode(newMemberCode);
-            member.setRoles("MEMBER");
-            groupMemberRepo.insertGroupMember(member);
-
-            // Update UI
-            fillNextEmptyMemberField(newMemberCode, newMember.getFullName());
-            updateRemoveButtonsVisibility();
-
-            Toast.makeText(this, "Member added successfully", Toast.LENGTH_SHORT).show();
-
-        } catch (Exception e) {
-            Toast.makeText(this, "Error adding member: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void transferLeaderRole() {
-        // Check leader permission
-        if (!isCurrentUserLeader()) {
-            Toast.makeText(this, "Only group leaders can transfer leadership", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        try {
-            // Create list of available members
-            List<String> memberOptions = new ArrayList<>();
-            List<String> memberIds = new ArrayList<>();
-
-            if (edtMemberId2 != null && !edtMemberId2.getText().toString().isEmpty()) {
-                memberOptions.add(tvMemberName2.getText() + " (" + edtMemberId2.getText() + ")");
-                memberIds.add(edtMemberId2.getText().toString());
-            }
-            if (edtMemberId3 != null && !edtMemberId3.getText().toString().isEmpty()) {
-                memberOptions.add(tvMemberName3.getText() + " (" + edtMemberId3.getText() + ")");
-                memberIds.add(edtMemberId3.getText().toString());
-            }
-            if (edtMemberId4 != null && !edtMemberId4.getText().toString().isEmpty()) {
-                memberOptions.add(tvMemberName4.getText() + " (" + edtMemberId4.getText() + ")");
-                memberIds.add(edtMemberId4.getText().toString());
-            }
-            if (edtMemberId5 != null && !edtMemberId5.getText().toString().isEmpty()) {
-                memberOptions.add(tvMemberName5.getText() + " (" + edtMemberId5.getText() + ")");
-                memberIds.add(edtMemberId5.getText().toString());
-            }
-
-            if (memberOptions.isEmpty()) {
-                Toast.makeText(this, "No members available to transfer leadership", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            new AlertDialog.Builder(this)
-                    .setTitle("Select New Leader")
-                    .setMessage("Warning: You will lose leader privileges after transfer.")
-                    .setItems(memberOptions.toArray(new String[0]), (dialog, which) -> {
-                        if (which >= 0 && which < memberIds.size()) {
-                            updateLeaderRole(memberIds.get(which));
-                        }
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .show();
-        } catch (Exception e) {
-            Toast.makeText(this, "Error transferring leadership: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void updateLeaderRole(String newLeaderCode) {
-        try {
-            // Update old leader to member
-            groupMemberRepo.updateMemberRole(groupId, userCode, "MEMBER");
-            // Update new leader
-            groupMemberRepo.updateMemberRole(groupId, newLeaderCode, "LEADER");
-
-            Toast.makeText(this, "Leader role transferred successfully", Toast.LENGTH_SHORT).show();
-            finish(); // Close activity as current user is no longer leader
-        } catch (Exception e) {
-            Toast.makeText(this, "Error updating leader role: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void updateRemoveButtonsVisibility() {
-        if (!isCurrentUserLeader()) {
-            // Hide all remove buttons for non-leaders
-            if (btnRemove2 != null) btnRemove2.setVisibility(View.GONE);
-            if (btnRemove3 != null) btnRemove3.setVisibility(View.GONE);
-            if (btnRemove4 != null) btnRemove4.setVisibility(View.GONE);
-            if (btnRemove5 != null) btnRemove5.setVisibility(View.GONE);
-            return;
-        }
-
-        // Show remove buttons only for filled positions (leaders only)
-        if (btnRemove2 != null) {
-            btnRemove2.setVisibility(
-                    (edtMemberId2 != null && !edtMemberId2.getText().toString().isEmpty())
-                            ? View.VISIBLE : View.GONE
-            );
-        }
-        if (btnRemove3 != null) {
-            btnRemove3.setVisibility(
-                    (edtMemberId3 != null && !edtMemberId3.getText().toString().isEmpty())
-                            ? View.VISIBLE : View.GONE
-            );
-        }
-        if (btnRemove4 != null) {
-            btnRemove4.setVisibility(
-                    (edtMemberId4 != null && !edtMemberId4.getText().toString().isEmpty())
-                            ? View.VISIBLE : View.GONE
-            );
-        }
-        if (btnRemove5 != null) {
-            btnRemove5.setVisibility(
-                    (edtMemberId5 != null && !edtMemberId5.getText().toString().isEmpty())
-                            ? View.VISIBLE : View.GONE
-            );
-        }
-    }
-
-    private int countMembers() {
-        int count = 1; // Leader
-        if (edtMemberId2 != null && !edtMemberId2.getText().toString().isEmpty()) count++;
-        if (edtMemberId3 != null && !edtMemberId3.getText().toString().isEmpty()) count++;
-        if (edtMemberId4 != null && !edtMemberId4.getText().toString().isEmpty()) count++;
-        if (edtMemberId5 != null && !edtMemberId5.getText().toString().isEmpty()) count++;
-        return count;
-    }
-
-    private void rearrangeMemberFields() {
-        // Collect all non-empty member fields
-        List<String> memberIds = new ArrayList<>();
-        List<String> memberNames = new ArrayList<>();
-
-        if (edtMemberId2 != null && !edtMemberId2.getText().toString().isEmpty()) {
-            memberIds.add(edtMemberId2.getText().toString());
-            memberNames.add(tvMemberName2.getText().toString());
-        }
-        if (edtMemberId3 != null && !edtMemberId3.getText().toString().isEmpty()) {
-            memberIds.add(edtMemberId3.getText().toString());
-            memberNames.add(tvMemberName3.getText().toString());
-        }
-        if (edtMemberId4 != null && !edtMemberId4.getText().toString().isEmpty()) {
-            memberIds.add(edtMemberId4.getText().toString());
-            memberNames.add(tvMemberName4.getText().toString());
-        }
-        if (edtMemberId5 != null && !edtMemberId5.getText().toString().isEmpty()) {
-            memberIds.add(edtMemberId5.getText().toString());
-            memberNames.add(tvMemberName5.getText().toString());
-        }
-
-        // Clear all fields
-        clearMemberFields();
-
-        // Refill in order
-        for (int i = 0; i < memberIds.size(); i++) {
-            switch (i) {
-                case 0:
-                    if (edtMemberId2 != null && tvMemberName2 != null) {
-                        edtMemberId2.setText(memberIds.get(i));
-                        tvMemberName2.setText(memberNames.get(i));
-                    }
-                    break;
-                case 1:
-                    if (edtMemberId3 != null && tvMemberName3 != null) {
-                        edtMemberId3.setText(memberIds.get(i));
-                        tvMemberName3.setText(memberNames.get(i));
-                    }
-                    break;
-                case 2:
-                    if (edtMemberId4 != null && tvMemberName4 != null) {
-                        edtMemberId4.setText(memberIds.get(i));
-                        tvMemberName4.setText(memberNames.get(i));
-                    }
-                    break;
-                case 3:
-                    if (edtMemberId5 != null && tvMemberName5 != null) {
-                        edtMemberId5.setText(memberIds.get(i));
-                        tvMemberName5.setText(memberNames.get(i));
-                    }
-                    break;
-            }
-        }
-    }
-
-    private void setupGroupCreation() {
-        clearAllFields();
-        setFieldsEnabled(true);
-        setupMemberFieldListeners();
-
-        if (btnCreateGroup != null) {
-            btnCreateGroup.setVisibility(View.VISIBLE);
-            btnCreateGroup.setOnClickListener(v -> validateAndCreateGroup());
-        }
-    }
-
-    private void setupMemberFieldListeners() {
+    private void setupTextWatchers() {
         TextWatcher memberWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
             @Override
             public void afterTextChanged(Editable s) {
                 validateMembers();
+                updateSaveButtonState();
             }
         };
 
-        if (edtMemberId2 != null) edtMemberId2.addTextChangedListener(memberWatcher);
-        if (edtMemberId3 != null) edtMemberId3.addTextChangedListener(memberWatcher);
-        if (edtMemberId4 != null) edtMemberId4.addTextChangedListener(memberWatcher);
-        if (edtMemberId5 != null) edtMemberId5.addTextChangedListener(memberWatcher);
+        for (int i = 1; i < memberIdFields.length; i++) {
+            memberIdFields[i].addTextChangedListener(memberWatcher);
+        }
+
+        edtGroupName.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                updateSaveButtonState();
+            }
+        });
     }
 
-    private void validateAndCreateGroup() {
-        try {
-            String groupName = edtGroupName != null ? edtGroupName.getText().toString().trim() : "";
-            if (groupName.isEmpty()) {
-                Toast.makeText(this, "Please enter group name", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            List<String> memberIds = new ArrayList<>();
-            memberIds.add(userCode); // Leader
-
-            // Collect member IDs
-            if (edtMemberId2 != null && !edtMemberId2.getText().toString().trim().isEmpty())
-                memberIds.add(edtMemberId2.getText().toString().trim());
-            if (edtMemberId3 != null && !edtMemberId3.getText().toString().trim().isEmpty())
-                memberIds.add(edtMemberId3.getText().toString().trim());
-            if (edtMemberId4 != null && !edtMemberId4.getText().toString().trim().isEmpty())
-                memberIds.add(edtMemberId4.getText().toString().trim());
-            if (edtMemberId5 != null && !edtMemberId5.getText().toString().trim().isEmpty())
-                memberIds.add(edtMemberId5.getText().toString().trim());
-
-            // Validate member count
-            if (memberIds.size() < 3) {
-                Toast.makeText(this, "Group must have at least 3 members", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            // Validate all members
-            for (String memberId : memberIds) {
-                AccountEntity member = accountRepo.getAccountByUserCode(memberId);
-                if (member == null) {
-                    Toast.makeText(this, "Invalid student ID: " + memberId, Toast.LENGTH_SHORT).show();
-                    return;
+    private void checkUserGroupStatus() {
+        executorService.execute(() -> {
+            groupMemberRepo.refreshDatabaseConnection();
+            boolean hasGroup = groupMemberRepo.isUserInAnyGroup(userCode);
+            mainHandler.post(() -> {
+                if (hasGroup) {
+                    groupId = groupMemberRepo.getGroupIdByUserCode(userCode);
+                    if (groupId != -1) {
+                        showExistingGroupDetails(groupId);
+                    } else {
+                        showErrorAndFinish("Error loading group");
+                    }
+                } else {
+                    setupGroupCreation();
                 }
-                if (!memberId.equals(userCode) && groupMemberRepo.isUserInAnyGroup(memberId)) {
-                    Toast.makeText(this, "Student " + memberId + " is already in another group", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            }
-
-            // All validations passed - Create group
-            createGroup(groupName, memberIds);
-        } catch (Exception e) {
-            Toast.makeText(this, "Error creating group: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+            });
+        });
     }
 
-    private void createGroup(String groupName, List<String> memberIds) {
-        try {
-            // Create group
-            GroupEntity group = new GroupEntity();
-            group.setName(groupName);
-            groupRepo.insertGroup(group);
-
-            // Add members
-            for (String memberId : memberIds) {
-                GroupMemberEntity member = new GroupMemberEntity();
-                member.setGroupId(group.getId());
-                member.setUserCode(memberId);
-                member.setRoles(memberId.equals(userCode) ? "LEADER" : "MEMBER");
-                groupMemberRepo.insertGroupMember(member);
-            }
-
-            Toast.makeText(this, "Group created successfully", Toast.LENGTH_SHORT).show();
-            finish();
-        } catch (Exception e) {
-            Toast.makeText(this, "Error creating group: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+    private void setupGroupCreation() {
+        isCreatingNewGroup = true;
+        btnCreateGroup.setVisibility(View.VISIBLE);
+        btnSave.setVisibility(View.GONE);
+        btnClear.setVisibility(View.VISIBLE);
+        enableAllFields();
     }
 
     private void showExistingGroupDetails(int groupId) {
-        try {
+        executorService.execute(() -> {
             GroupEntity group = groupRepo.getGroupById(groupId);
-            if (group == null) {
-                Toast.makeText(this, "Error loading group details", Toast.LENGTH_SHORT).show();
-                finish();
-                return;
-            }
+            if (group != null) {
+                List<GroupMemberEntity> members = groupMemberRepo.getMembersByGroupId(groupId);
 
-            // Display group info
-            if (edtGroupName != null) {
-                edtGroupName.setText(group.getName());
-                edtGroupName.setEnabled(false);
-            }
-
-            // Display members
-            List<GroupMemberEntity> members = groupMemberRepo.getMembersByGroupId(groupId);
-            if (members != null) {
+                List<GroupMemberEntity> nonLecturerMembers = new ArrayList<>();
                 for (GroupMemberEntity member : members) {
                     AccountEntity acc = accountRepo.getAccountByUserCode(member.getUserCode());
-                    String displayName = acc != null ? acc.getFullName() : member.getUserCode();
-
-                    if ("LEADER".equals(member.getRoles())) {
-                        if (edtMemberId1 != null && tvMemberName1 != null) {
-                            edtMemberId1.setText(member.getUserCode());
-                            tvMemberName1.setText(displayName + " (Leader)");
+                    if (acc != null && !"LECTURER".equalsIgnoreCase(acc.getRole())) {
+                        nonLecturerMembers.add(member);
+                        originalMemberIds.add(member.getUserCode());
+                        if (member.getUserCode().equals(userCode)) {
+                            isCurrentUserLeader = "LEADER".equals(member.getRoles());
                         }
-                    } else if("MEMBER".equals(member.getRoles())){
-                        fillNextEmptyMemberField(member.getUserCode(), displayName);
+                    }
+                }
+
+                mainHandler.post(() -> {
+                    edtGroupName.setText(group.getName());
+                    edtGroupName.setEnabled(isCurrentUserLeader);
+
+                    for (int i = 0; i < nonLecturerMembers.size() && i < memberIdFields.length; i++) {
+                        GroupMemberEntity member = nonLecturerMembers.get(i);
+                        AccountEntity acc = accountRepo.getAccountByUserCode(member.getUserCode());
+                        String displayName = acc != null ? acc.getFullName() : member.getUserCode();
+
+                        memberIdFields[i].setText(member.getUserCode());
+                        if (i == 0) {
+                            memberNameViews[i].setText(displayName + (isCurrentUserLeader ? " (Leader)" : ""));
+                        } else {
+                            memberNameViews[i].setText(displayName);
+                        }
+                    }
+
+                    for (int i = nonLecturerMembers.size(); i < memberIdFields.length; i++) {
+                        memberIdFields[i].setText("");
+                        memberNameViews[i].setText("");
+                    }
+
+                    setupUIBasedOnRole();
+                });
+            } else {
+                showErrorAndFinish("Error loading group");
+            }
+        });
+    }
+
+    private void setupUIBasedOnRole() {
+        if (isCreatingNewGroup) {
+            enableAllFields();
+            return;
+        }
+
+        for (int i = 1; i < memberIdFields.length; i++) {
+            memberIdFields[i].setEnabled(isCurrentUserLeader);
+            if (removeButtons[i] != null) {
+                removeButtons[i].setVisibility(isCurrentUserLeader ? View.VISIBLE : View.GONE);
+            }
+        }
+
+        btnCreateGroup.setVisibility(View.GONE);
+        btnSave.setVisibility(isCurrentUserLeader ? View.VISIBLE : View.GONE);
+        btnClear.setVisibility(isCurrentUserLeader ? View.VISIBLE : View.GONE);
+        btnTransferLeader.setVisibility(isCurrentUserLeader ? View.VISIBLE : View.GONE);
+    }
+
+    private void validateAndCreateGroup() {
+        String groupName = edtGroupName.getText().toString().trim();
+        if (groupName.isEmpty()) {
+            showToast("Please enter group name");
+            return;
+        }
+
+        List<String> memberIds = getCurrentMemberIds();
+        if (memberIds.size() < 3) {
+            showToast("Group must have at least 3 members");
+            return;
+        }
+
+        if (hasDuplicateMembers()) {
+            showToast("Duplicate member IDs found");
+            return;
+        }
+
+        if (!validateAllMembers()) {
+            showToast("Some members are invalid");
+            return;
+        }
+
+        createGroup(groupName, memberIds);
+    }
+
+    private void createGroup(String groupName, List<String> memberIds) {
+        executorService.execute(() -> {
+            SQLiteDatabase db = null;
+            try {
+                db = groupRepo.getWritableDatabase();
+                db.beginTransaction();
+
+                // Create group
+                ContentValues groupValues = new ContentValues();
+                groupValues.put("name", groupName);
+                groupValues.put("project_id", 0);
+                long groupId = db.insert("GroupProject", null, groupValues);
+
+                if (groupId == -1) {
+                    throw new Exception("Failed to create group");
+                }
+
+                // Add creator as leader
+                ContentValues leaderValues = new ContentValues();
+                leaderValues.put("group_id", groupId);
+                leaderValues.put("user_code", userCode);
+                leaderValues.put("roles", "LEADER");
+                db.insert("GroupMember", null, leaderValues);
+
+                // Add other members
+                for (String memberId : memberIds) {
+                    if (!memberId.equals(userCode)) {
+                        ContentValues memberValues = new ContentValues();
+                        memberValues.put("group_id", groupId);
+                        memberValues.put("user_code", memberId);
+                        memberValues.put("roles", "MEMBER");
+                        db.insert("GroupMember", null, memberValues);
+                    }
+                }
+
+                db.setTransactionSuccessful();
+
+                mainHandler.post(() -> {
+                    showToast("Group created successfully");
+                    setResult(RESULT_OK);
+                    finish();
+                });
+            } catch (Exception e) {
+                Log.e("GroupDetail", "Error creating group", e);
+                mainHandler.post(() -> showToast("Error creating group: " + e.getMessage()));
+            } finally {
+                if (db != null) {
+                    try {
+                        db.endTransaction();
+                        db.close();
+                    } catch (Exception e) {
+                        Log.e("GroupDetail", "Error closing DB", e);
                     }
                 }
             }
+        });
+    }
 
-            // Disable all inputs for viewing
-            setFieldsEnabled(false);
-            if (btnCreateGroup != null) {
-                btnCreateGroup.setVisibility(View.GONE);
+    private void saveChanges() {
+        if (groupId == -1) return;
+        if (!isCurrentUserLeader) {
+            showToast("Only leaders can save changes");
+            return;
+        }
+
+        String groupName = edtGroupName.getText().toString().trim();
+        if (groupName.isEmpty()) {
+            showToast("Please enter group name");
+            return;
+        }
+
+        List<String> currentMemberIds = getCurrentMemberIds();
+        if (currentMemberIds.size() < 3) {
+            showToast("Group must have at least 3 members");
+            return;
+        }
+
+        if (hasDuplicateMembers()) {
+            showToast("Duplicate member IDs found");
+            return;
+        }
+
+        if (!validateAllMembers()) {
+            showToast("Some members are invalid");
+            return;
+        }
+
+        updateGroup(groupName, currentMemberIds);
+    }
+
+    private void updateGroup(String groupName, List<String> currentMemberIds) {
+        executorService.execute(() -> {
+            try {
+                // Update group name
+                GroupEntity group = groupRepo.getGroupById(groupId);
+                if (group != null) {
+                    group.setName(groupName);
+                    groupRepo.updateGroup(group);
+                }
+
+                // Update members
+                Set<String> currentMembers = new HashSet<>(currentMemberIds);
+
+                // Remove deleted members
+                for (String originalId : originalMemberIds) {
+                    if (!currentMembers.contains(originalId)) {
+                        groupMemberRepo.removeMember(groupId, originalId);
+                    }
+                }
+
+                // Add new members
+                for (String memberId : currentMemberIds) {
+                    if (!originalMemberIds.contains(memberId)) {
+                        GroupMemberEntity member = new GroupMemberEntity();
+                        member.setGroupId(groupId);
+                        member.setUserCode(memberId);
+                        member.setRoles("MEMBER");
+                        groupMemberRepo.insertGroupMember(member);
+                    }
+                }
+
+                mainHandler.post(() -> {
+                    showToast("Changes saved successfully");
+                    setResult(RESULT_OK);
+                    finish();
+                });
+            } catch (Exception e) {
+                mainHandler.post(() -> showToast("Error saving changes"));
             }
-        } catch (Exception e) {
-            Toast.makeText(this, "Error displaying group details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            finish();
+        });
+    }
+
+
+
+
+
+
+
+    private boolean isCurrentUserLeader() {
+        if (groupId == -1) return false;
+        GroupMemberEntity member = groupMemberRepo.getMemberByUserCode(userCode);
+        return member != null && "LEADER".equals(member.getRoles());
+    }
+
+
+
+
+
+
+
+    private void removeMember(int memberIndex) {
+        if (!isCurrentUserLeader) {
+            showToast("Only leaders can remove members");
+            return;
         }
+        if (memberIndex < 1 || memberIndex >= memberIdFields.length) return;
+
+        String memberId = memberIdFields[memberIndex].getText().toString().trim();
+        if (memberId.isEmpty()) return;
+
+        new AlertDialog.Builder(this)
+                .setTitle("Remove Member")
+                .setMessage("Are you sure you want to remove this member?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    memberIdFields[memberIndex].setText("");
+                    memberNameViews[memberIndex].setText("");
+                    updateSaveButtonState();
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
-    private void fillNextEmptyMemberField(String userCode, String displayName) {
-        if (edtMemberId2 != null && tvMemberName2 != null && edtMemberId2.getText().toString().isEmpty()) {
-            edtMemberId2.setText(userCode);
-            tvMemberName2.setText(displayName);
-        } else if (edtMemberId3 != null && tvMemberName3 != null && edtMemberId3.getText().toString().isEmpty()) {
-            edtMemberId3.setText(userCode);
-            tvMemberName3.setText(displayName);
-        } else if (edtMemberId4 != null && tvMemberName4 != null && edtMemberId4.getText().toString().isEmpty()) {
-            edtMemberId4.setText(userCode);
-            tvMemberName4.setText(displayName);
-        } else if (edtMemberId5 != null && tvMemberName5 != null && edtMemberId5.getText().toString().isEmpty()) {
-            edtMemberId5.setText(userCode);
-            tvMemberName5.setText(displayName);
+    private void transferLeaderRole() {
+        if (!isCurrentUserLeader) {
+            showToast("Only leaders can transfer leadership");
+            return;
         }
+        List<String> memberOptions = new ArrayList<>();
+        List<String> memberIds = new ArrayList<>();
+
+        for (int i = 1; i < memberIdFields.length; i++) {
+            String memberId = memberIdFields[i].getText().toString().trim();
+            if (!memberId.isEmpty()) {
+                memberOptions.add(memberNameViews[i].getText() + " (" + memberId + ")");
+                memberIds.add(memberId);
+            }
+        }
+
+        if (memberOptions.isEmpty()) {
+            showToast("No members available");
+            return;
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("Transfer Leadership")
+                .setItems(memberOptions.toArray(new String[0]), (dialog, which) -> {
+                    if (which >= 0 && which < memberIds.size()) {
+                        transferLeadership(memberIds.get(which));
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
-    private void clearAllFields() {
-        if (edtGroupName != null) edtGroupName.setText("");
-        clearMemberFields();
+    private void transferLeadership(String newLeaderId) {
+        executorService.execute(() -> {
+            try {
+                groupMemberRepo.updateMemberRole(groupId, userCode, "MEMBER");
+                groupMemberRepo.updateMemberRole(groupId, newLeaderId, "LEADER");
+
+                mainHandler.post(() -> {
+                    showToast("Leadership transferred");
+                    finish();
+                });
+            } catch (Exception e) {
+                mainHandler.post(() -> showToast("Error transferring leadership"));
+            }
+        });
     }
 
-    private void clearMemberFields() {
-        if (edtMemberId2 != null) edtMemberId2.setText("");
-        if (edtMemberId3 != null) edtMemberId3.setText("");
-        if (edtMemberId4 != null) edtMemberId4.setText("");
-        if (edtMemberId5 != null) edtMemberId5.setText("");
-        if (tvMemberName2 != null) tvMemberName2.setText("");
-        if (tvMemberName3 != null) tvMemberName3.setText("");
-        if (tvMemberName4 != null) tvMemberName4.setText("");
-        if (tvMemberName5 != null) tvMemberName5.setText("");
+    private List<String> getCurrentMemberIds() {
+        Set<String> memberIds = new HashSet<>();
+        memberIds.add(userCode); // Always include creator as leader
+
+        for (int i = 1; i < memberIdFields.length; i++) {
+            String memberId = memberIdFields[i].getText().toString().trim();
+            if (!memberId.isEmpty() && !memberId.equals(userCode)) {
+                memberIds.add(memberId);
+            }
+        }
+        return new ArrayList<>(memberIds);
+    }
+    private boolean hasDuplicateMembers() {
+        Set<String> memberIds = new HashSet<>();
+        memberIds.add(userCode);
+
+        for (int i = 1; i < memberIdFields.length; i++) {
+            String memberId = memberIdFields[i].getText().toString().trim();
+            if (!memberId.isEmpty() && !memberIds.add(memberId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private void setFieldsEnabled(boolean enabled) {
-        if (edtGroupName != null) edtGroupName.setEnabled(enabled);
-        if (edtMemberId2 != null) edtMemberId2.setEnabled(enabled);
-        if (edtMemberId3 != null) edtMemberId3.setEnabled(enabled);
-        if (edtMemberId4 != null) edtMemberId4.setEnabled(enabled);
-        if (edtMemberId5 != null) edtMemberId5.setEnabled(enabled);
+    private boolean validateAllMembers() {
+        boolean allValid = true;
+
+        for (int i = 1; i < memberIdFields.length; i++) {
+            String memberId = memberIdFields[i].getText().toString().trim();
+            if (!memberId.isEmpty() && !validateMember(i, memberId)) {
+                allValid = false;
+            }
+        }
+        return allValid;
+    }
+
+    private boolean validateMember(int index, String memberId) {
+        // Prevent adding yourself as a member (you're already the leader)
+        if (memberId.equals(userCode)) {
+            memberNameViews[index].setText("You are already the leader");
+            return false;
+        }
+
+        AccountEntity member = accountRepo.getAccountByUserCode(memberId);
+        if (member == null) {
+            memberNameViews[index].setText("User not found");
+            return false;
+        }
+
+        // Explicitly block lecturers from being added
+        if ("LECTURER".equalsIgnoreCase(member.getRole())) {
+            memberNameViews[index].setText("Lecturers cannot be group members");
+            return false;
+        }
+
+        // Check if user is in another group (only if we're editing an existing group)
+        if (groupId != -1) {
+            int userGroupId = groupMemberRepo.getGroupIdByUserCode(memberId);
+            if (userGroupId != -1 && userGroupId != groupId) {
+                memberNameViews[index].setText("Already in another group");
+                return false;
+            }
+        } else {
+            // For new group creation, just check if user is in any group
+            if (groupMemberRepo.isUserInAnyGroup(memberId)) {
+                memberNameViews[index].setText("Already in another group");
+                return false;
+            }
+        }
+
+        memberNameViews[index].setText(member.getFullName());
+        return true;
     }
 
     private void validateMembers() {
-        boolean isValid = true;
-        int memberCount = 1; // Start with 1 for leader
-
-        // Validate each member field
-        if (edtMemberId2 != null && !edtMemberId2.getText().toString().isEmpty()) {
-            if (validateMember(edtMemberId2, tvMemberName2)) memberCount++;
-            else isValid = false;
-        }
-        if (edtMemberId3 != null && !edtMemberId3.getText().toString().isEmpty()) {
-            if (validateMember(edtMemberId3, tvMemberName3)) memberCount++;
-            else isValid = false;
-        }
-        if (edtMemberId4 != null && !edtMemberId4.getText().toString().isEmpty()) {
-            if (validateMember(edtMemberId4, tvMemberName4)) memberCount++;
-            else isValid = false;
-        }
-        if (edtMemberId5 != null && !edtMemberId5.getText().toString().isEmpty()) {
-            if (validateMember(edtMemberId5, tvMemberName5)) memberCount++;
-            else isValid = false;
-        }
-
-        if (btnCreateGroup != null) {
-            btnCreateGroup.setEnabled(isValid && memberCount >= 3);
+        for (int i = 1; i < memberIdFields.length; i++) {
+            String memberId = memberIdFields[i].getText().toString().trim();
+            if (!memberId.isEmpty()) {
+                validateMember(i, memberId);
+            } else {
+                memberNameViews[i].setText("");
+            }
         }
     }
 
-    private boolean validateMember(EditText memberField, TextView nameField) {
-        if (memberField == null || nameField == null) return false;
+    private void updateSaveButtonState() {
+        if (isCreatingNewGroup) {
+            boolean isValid = !edtGroupName.getText().toString().trim().isEmpty() &&
+                    getCurrentMemberIds().size() >= 3 &&
+                    !hasDuplicateMembers() &&
+                    validateAllMembers();
 
-        String memberId = memberField.getText().toString().trim();
-
-        if (memberId.isEmpty()) return false;
-
-        try {
-            AccountEntity member = accountRepo.getAccountByUserCode(memberId);
-            if (member == null) {
-                nameField.setText("User not found");
-                return false;
-            }
-
-            if (groupMemberRepo.isUserInAnyGroup(memberId)) {
-                nameField.setText("Already in a group");
-                return false;
-            }
-
-            nameField.setText(member.getFullName());
-            return true;
-        } catch (Exception e) {
-            nameField.setText("Error validating user");
-            return false;
+            btnCreateGroup.setEnabled(isValid);
+        } else {
+            btnSave.setEnabled(hasChanges());
         }
+    }
+
+    private boolean hasChanges() {
+        GroupEntity group = groupRepo.getGroupById(groupId);
+        if (group != null && !group.getName().equals(edtGroupName.getText().toString().trim())) {
+            return true;
+        }
+
+        Set<String> currentMembers = new HashSet<>(getCurrentMemberIds());
+        if (currentMembers.size() != originalMemberIds.size()) {
+            return true;
+        }
+
+        for (String memberId : currentMembers) {
+            if (!originalMemberIds.contains(memberId)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void clearAllFields() {
+        edtGroupName.setText("");
+        for (int i = 1; i < memberIdFields.length; i++) {
+            memberIdFields[i].setText("");
+            memberNameViews[i].setText("");
+        }
+        updateSaveButtonState();
+    }
+
+    private void enableAllFields() {
+        edtGroupName.setEnabled(true);
+        for (int i = 1; i < memberIdFields.length; i++) {
+            memberIdFields[i].setEnabled(true);
+            if (removeButtons[i] != null) {
+                removeButtons[i].setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showErrorAndFinish(String message) {
+        mainHandler.post(() -> {
+            showToast(message);
+            finish();
+        });
     }
 }

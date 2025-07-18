@@ -19,6 +19,14 @@ public class GroupRepository {
         dbHelper = new AppDatabaseHelper(context);
     }
 
+    public void refreshDatabaseConnection() {
+        dbHelper.refreshConnection();
+    }
+
+    public SQLiteDatabase getWritableDatabase() {
+        return dbHelper.getWritableDatabase();
+    }
+
     public void insertGroup(GroupEntity group) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -90,5 +98,17 @@ public class GroupRepository {
         db.update(GroupDao.TABLE_NAME, values,
                 "id = ?", new String[]{String.valueOf(group.getId())});
         db.close();
+    }
+
+    public int getLastInsertedId() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT last_insert_rowid()", null);
+        int id = -1;
+        if (cursor.moveToFirst()) {
+            id = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+        return id;
     }
 }

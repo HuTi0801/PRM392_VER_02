@@ -1,21 +1,19 @@
 package com.example.mentorlink_project.features.proposal.view;
 
 import android.os.Bundle;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mentorlink_project.R;
+import com.example.mentorlink_project.data.repositories.GroupMemberRepository;
 import com.example.mentorlink_project.features.proposal.contract.CreateProposalContract;
 import com.example.mentorlink_project.features.proposal.presenter.CreateProposalPresenter;
 
 import java.util.List;
-
 
 public class CreateProposalActivity extends AppCompatActivity implements CreateProposalContract.View {
     private EditText edtTitle, edtDesc;
@@ -25,6 +23,7 @@ public class CreateProposalActivity extends AppCompatActivity implements CreateP
     private CreateProposalPresenter presenter;
     private String fileUrl = "";
     private int groupId = 1; // Get from session/intent
+    private String userCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,17 +40,27 @@ public class CreateProposalActivity extends AppCompatActivity implements CreateP
 
         presenter = new CreateProposalPresenter(this, this);
         presenter.loadMajors();
+        userCode = getIntent().getStringExtra("USER_CODE");
+        if (userCode == null || userCode.isEmpty()) {
+            showMessage("User information not available");
+            finish();
+            return;
+        }
+
+        loadGroupId();
 
         spinnerMajor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 String major = (String) parent.getItemAtPosition(pos);
                 presenter.loadLecturers(major);
             }
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         btnAttachFile.setOnClickListener(v -> {
-            presenter.onAttachFileClicked();
             // Open file picker
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("*/*");
@@ -65,6 +74,18 @@ public class CreateProposalActivity extends AppCompatActivity implements CreateP
             String lecturer = (String) spinnerLecturer.getSelectedItem();
             presenter.onSendClicked(title, desc, fileUrl, major, lecturer, groupId);
         });
+    }
+
+    private void loadGroupId() {
+        new Thread(() -> {
+            groupId = new GroupMemberRepository(this).getGroupIdByUserCode(userCode);
+            runOnUiThread(() -> {
+                if (groupId == -1) {
+                    showMessage("Failed to load group information");
+                    finish();
+                }
+            });
+        }).start();
     }
 
     @Override
@@ -106,8 +127,8 @@ public class CreateProposalActivity extends AppCompatActivity implements CreateP
                 fileUrl = uri.toString();
                 String fileName = uri.getLastPathSegment();
                 showFileName(fileName);
+                presenter.onFileAttached(fileName); // Notify presenter if needed
             }
         }
     }
-
 }

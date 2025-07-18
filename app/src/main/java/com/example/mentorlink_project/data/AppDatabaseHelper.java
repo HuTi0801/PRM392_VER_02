@@ -47,6 +47,9 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
                 "('SE0017', '123', 'STUDENT', 'Vo Thi Bich', 'Software Engineering')," +
                 "('SE0018', '123', 'STUDENT', 'Dang Van Long', 'Software Engineering')," +
                 "('SE0019', '123', 'STUDENT', 'Nguyen Van Quang', 'Software Engineering')," +
+                "('SE0020', '123', 'STUDENT', 'Nguyen Thi X', 'Software Engineering')," +
+                "('SE0021', '123', 'STUDENT', 'Tran Van Y', 'Software Engineering')," +
+                "('SE0022', '123', 'STUDENT', 'Le Thi Z', 'Software Engineering')," +
                 "('LEC01', '123', 'LECTURER', 'Le Minh', 'Software Engineering')," +
                 "('LEC02', '123', 'LECTURER', 'Tran Hung', 'Software Engineering');");
 
@@ -106,6 +109,13 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS GroupProject;");
         db.execSQL("DROP TABLE IF EXISTS Account;");
         onCreate(db);
+    }
+
+    public synchronized void refreshConnection() {
+        SQLiteDatabase db = getWritableDatabase();
+        if (db != null && db.isOpen()) {
+            db.close();
+        }
     }
 }
 

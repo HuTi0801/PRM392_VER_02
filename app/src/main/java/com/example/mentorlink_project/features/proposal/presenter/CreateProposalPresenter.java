@@ -33,8 +33,22 @@ public class CreateProposalPresenter implements CreateProposalContract.Presenter
     }
 
     @Override
-    public void onAttachFileClicked() {
-        // Handled in Activity (open file picker)
+    public void onFileAttached(String fileName) {
+        // Handle the file attachment in the presenter
+        // You might want to:
+        // 1. Validate the file type
+        // 2. Store the file reference
+        // 3. Update the view
+        view.showFileName(fileName);
+
+        // Example validation:
+        if (fileName != null && !fileName.isEmpty()) {
+            String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+            if (!isValidFileType(fileExtension)) {
+                view.showMessage("Invalid file type. Please select a PDF or DOC file.");
+                view.showFileName("No file selected");
+            }
+        }
     }
 
     @Override
@@ -54,5 +68,9 @@ public class CreateProposalPresenter implements CreateProposalContract.Presenter
         projectRepo.insertProject(project);
         view.showMessage("Proposal sent!");
         view.finishWithSuccess();
+    }
+
+    private boolean isValidFileType(String extension) {
+        return extension.equals("pdf") || extension.equals("doc") || extension.equals("docx");
     }
 }

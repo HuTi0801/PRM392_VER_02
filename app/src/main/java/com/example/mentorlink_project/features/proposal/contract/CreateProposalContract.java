@@ -13,7 +13,7 @@ public interface CreateProposalContract {
     interface Presenter {
         void loadMajors();
         void loadLecturers(String major);
-        void onAttachFileClicked();
+        void onFileAttached(String fileName);
         void onSendClicked(String title, String desc, String fileUrl, String major, String lecturerCode, int groupId);
     }
 }
