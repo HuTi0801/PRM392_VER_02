@@ -77,4 +77,68 @@ public class GroupMemberRepository {
         db.close();
         return exists;
     }
+
+    public GroupMemberEntity getMemberByUserCode(String userCode) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        GroupMemberEntity member = null;
+
+        Cursor cursor = db.query(
+                GroupMemberDao.TABLE_NAME,
+                null,
+                "user_code = ?",
+                new String[]{userCode},
+                null, null, null
+        );
+
+        if (cursor.moveToFirst()) {
+            member = new GroupMemberEntity();
+            member.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+            member.setGroupId(cursor.getInt(cursor.getColumnIndexOrThrow("group_id")));
+            member.setUserCode(cursor.getString(cursor.getColumnIndexOrThrow("user_code")));
+            member.setRoles(cursor.getString(cursor.getColumnIndexOrThrow("roles")));
+        }
+
+        cursor.close();
+        db.close();
+        return member;
+    }
+
+    public int getGroupIdByUserCode(String userCode) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        int groupId = -1;
+
+        Cursor cursor = db.query(
+                GroupMemberDao.TABLE_NAME,
+                new String[]{"group_id"},  // Only select the group_id column
+                "user_code = ?",
+                new String[]{userCode},
+                null, null, null
+        );
+
+        if (cursor.moveToFirst()) {
+            groupId = cursor.getInt(cursor.getColumnIndexOrThrow("group_id"));
+        }
+
+        cursor.close();
+        db.close();
+        return groupId;
+    }
+
+    public void removeMember(int groupId, String userCode) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.delete(GroupMemberDao.TABLE_NAME,
+                "group_id = ? AND user_code = ?",
+                new String[]{String.valueOf(groupId), userCode});
+        db.close();
+    }
+
+    public void updateMemberRole(int groupId, String userCode, String newRole) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("roles", newRole);
+        db.update(GroupMemberDao.TABLE_NAME, values,
+                "group_id = ? AND user_code = ?",
+                new String[]{String.valueOf(groupId), userCode});
+        db.close();
+    }
 }

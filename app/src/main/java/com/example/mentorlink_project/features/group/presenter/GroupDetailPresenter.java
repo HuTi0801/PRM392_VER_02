@@ -45,6 +45,7 @@ public class GroupDetailPresenter implements GroupDetailContract.Presenter {
         }
     }
 
+
     @Override
     public void onEditGroupNameClicked(String newName) {
         // Implement update logic
