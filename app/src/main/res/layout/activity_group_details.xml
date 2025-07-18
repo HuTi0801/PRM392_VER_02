@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/group_details"
     android:background="#F5F5F5"
     android:padding="16dp">
@@ -82,7 +83,6 @@
                     android:hint="Leader Student ID"
                     android:padding="10dp"
                     android:textColor="#000000"
-                    android:textSize="24dp"
                     android:textColorHint="#222222"
                     android:enabled="false"
                     tools:ignore="Autofill,HardcodedText,TextFields"/>
@@ -114,7 +114,6 @@
                     android:background="@drawable/orange_rounded_bg"
                     android:hint="Student ID"
                     android:padding="10dp"
-                    android:textSize="24dp"
                     android:textColor="#000000"
                     android:textColorHint="#222222"
                     tools:ignore="Autofill,HardcodedText,TextFields"/>
@@ -144,7 +143,6 @@
                     android:hint="Student ID"
                     android:padding="10dp"
                     android:textColor="#000000"
-                    android:textSize="24dp"
                     android:textColorHint="#222222"
                     tools:ignore="Autofill,HardcodedText,TextFields"/>
 
@@ -173,7 +171,6 @@
                     android:hint="Student ID"
                     android:padding="10dp"
                     android:textColor="#000000"
-                    android:textSize="24dp"
                     android:textColorHint="#222222"
                     tools:ignore="Autofill,HardcodedText,TextFields"/>
 
@@ -202,7 +199,6 @@
                     android:hint="Student ID"
                     android:padding="10dp"
                     android:textColor="#000000"
-                    android:textSize="24dp"
                     android:textColorHint="#222222"
                     tools:ignore="Autofill,HardcodedText,TextFields"/>
 
