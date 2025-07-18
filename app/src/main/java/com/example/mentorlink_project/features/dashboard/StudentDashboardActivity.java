@@ -1,4 +1,4 @@
-package com.example.mentorlink_project.features.dashboard.view;
+package com.example.mentorlink_project.features.dashboard;
 
 import android.content.Intent;
 import android.os.Bundle;

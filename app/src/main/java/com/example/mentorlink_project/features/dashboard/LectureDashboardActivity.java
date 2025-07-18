@@ -1,4 +1,4 @@
-package com.example.mentorlink_project.features.dashboard.view;
+package com.example.mentorlink_project.features.dashboard;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,9 +7,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.mentorlink_project.R;
 import com.example.mentorlink_project.features.login.LoginActivity;
-import com.example.mentorlink_project.features.proposal.ApprovedDetailsProposalActivity;
-import com.example.mentorlink_project.features.proposal.PendingDetailsProposalActivity;
-import com.example.mentorlink_project.features.proposal.RejectedDetailsProposalActivity;
+import com.example.mentorlink_project.features.proposal.view.ApprovedDetailsProposalActivity;
+import com.example.mentorlink_project.features.proposal.view.PendingDetailsProposalActivity;
+import com.example.mentorlink_project.features.proposal.view.RejectedDetailsProposalActivity;
 
 public class LectureDashboardActivity extends AppCompatActivity {
     @Override
