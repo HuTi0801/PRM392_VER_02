@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".features.dashboard.view.StudentDashboardActivity"
+            android:name=".features.dashboard.StudentDashboardActivity"
             android:exported="true">
         </activity>
         <activity
@@ -39,7 +39,7 @@
             android:exported="true">
         </activity>
         <activity
-            android:name=".features.dashboard.view.LectureDashboardActivity"
+            android:name=".features.dashboard.LectureDashboardActivity"
             android:exported="true">
         </activity>
         <activity
@@ -52,6 +52,10 @@
         </activity>
         <activity
             android:name=".features.proposal.view.ApprovedDetailsProposalActivity"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".features.group.CreateGroupActivity"
             android:exported="true">
         </activity>
     </application>

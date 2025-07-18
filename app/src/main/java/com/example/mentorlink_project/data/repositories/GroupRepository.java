@@ -60,5 +60,4 @@ public class GroupRepository {
         db.close();
         return list;
     }
-
 }
