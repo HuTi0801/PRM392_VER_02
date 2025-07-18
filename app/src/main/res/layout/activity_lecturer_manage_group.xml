@@ -13,7 +13,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Groups You Manage"
+        android:text="Groups Your Manage"
         android:textSize="24sp"
         android:textStyle="bold"
         android:gravity="center"
