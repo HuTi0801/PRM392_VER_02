@@ -54,6 +54,10 @@
             android:name=".features.proposal.ApprovedDetailsProposalActivity"
             android:exported="true">
         </activity>
+        <activity
+            android:name=".features.group.CreateGroupActivity"
+            android:exported="true">
+        </activity>
     </application>
 
 </manifest>

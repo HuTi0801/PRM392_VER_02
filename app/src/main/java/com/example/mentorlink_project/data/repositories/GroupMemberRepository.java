@@ -46,4 +46,15 @@ public class GroupMemberRepository {
         db.close();
         return list;
     }
+
+    public boolean checkStudentHasGroup(String userCode) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM GroupMember WHERE user_code = ?",
+                new String[]{userCode}
+        );
+        boolean hasGroup = cursor.moveToFirst();
+        cursor.close();
+        return hasGroup;
+    }
 }

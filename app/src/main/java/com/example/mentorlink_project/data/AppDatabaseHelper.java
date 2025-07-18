@@ -71,7 +71,7 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
         // Drop and recreate
         db.execSQL("DROP TABLE IF EXISTS Project;");
         db.execSQL("DROP TABLE IF EXISTS GroupMember;");
-        db.execSQL("DROP TABLE IF EXISTS GroupTable;");
+        db.execSQL("DROP TABLE IF EXISTS GroupProject;");
         db.execSQL("DROP TABLE IF EXISTS Account;");
         onCreate(db);
     }
