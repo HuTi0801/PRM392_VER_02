@@ -60,4 +60,26 @@ public class GroupRepository {
         db.close();
         return list;
     }
+
+    public List<String> getGroupNamesByLecturer(String userCode) {
+        List<String> groupNames = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.query(
+                GroupDao.TABLE_NAME,
+                new String[]{"name"},
+                "lecturer_code = ?",        // Giảng viên quản lý
+                new String[]{userCode},
+                null, null, null
+        );
+
+        while (cursor.moveToNext()) {
+            String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+            groupNames.add(name);
+        }
+
+        cursor.close();
+        db.close();
+        return groupNames;
+    }
 }

@@ -7,7 +7,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.mentorlink_project.R;
 import com.example.mentorlink_project.data.repositories.GroupMemberRepository;
-import com.example.mentorlink_project.features.group.CreateGroupActivity;
+import com.example.mentorlink_project.features.group.view.GroupListActivity;
 import com.example.mentorlink_project.features.group.view.GroupDetailActivity;
 import com.example.mentorlink_project.features.login.LoginActivity;
 import com.example.mentorlink_project.features.proposal.view.ProposalDetailActivity;
@@ -44,7 +44,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
             if (hasGroup) {
                 Toast.makeText(this, "Bạn đã có nhóm, không thể tạo mới!", Toast.LENGTH_SHORT).show();
             } else {
-                Intent intent = new Intent(this, CreateGroupActivity.class);
+                Intent intent = new Intent(this, GroupListActivity.class);
                 intent.putExtra("USER_CODE", currentUserCode);
                 intent.putExtra("ROLE", currentUserRole);
                 startActivity(intent);

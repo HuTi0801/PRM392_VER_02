@@ -55,7 +55,7 @@
             android:exported="true">
         </activity>
         <activity
-            android:name=".features.group.CreateGroupActivity"
+            android:name=".features.group.view.GroupListActivity"
             android:exported="true">
         </activity>
     </application>
