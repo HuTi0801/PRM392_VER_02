@@ -8,9 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.mentorlink_project.R;
 import com.example.mentorlink_project.data.repositories.GroupMemberRepository;
 import com.example.mentorlink_project.features.group.CreateGroupActivity;
-import com.example.mentorlink_project.features.group.GroupDetailActivity;
+import com.example.mentorlink_project.features.group.view.GroupDetailActivity;
 import com.example.mentorlink_project.features.login.LoginActivity;
-import com.example.mentorlink_project.features.proposal.ProposalDetailActivity;
+import com.example.mentorlink_project.features.proposal.view.ProposalDetailActivity;
 
 public class StudentDashboardActivity extends AppCompatActivity {
     private GroupMemberRepository groupMemberRepository;
