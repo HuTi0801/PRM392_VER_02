@@ -7,20 +7,17 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.mentorlink_project.R;
 import com.example.mentorlink_project.data.repositories.GroupMemberRepository;
-import com.example.mentorlink_project.features.group.CreateGroupActivity;
 import com.example.mentorlink_project.features.group.view.GroupDetailActivity;
 import com.example.mentorlink_project.features.login.LoginActivity;
 import com.example.mentorlink_project.features.proposal.view.ProposalDetailActivity;
 
 public class StudentDashboardActivity extends AppCompatActivity {
-    private GroupMemberRepository groupMemberRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_dashboard);
 
-        Button btnCreateGroup = findViewById(R.id.btnCreateGroup);
         Button btnGroupInfo = findViewById(R.id.btnGroupInfo);
         Button btnProposalInfo = findViewById(R.id.btnProposalInfo);
 
@@ -37,19 +34,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
             return;
         }
 
-        groupMemberRepository = new GroupMemberRepository(this);
-
-        btnCreateGroup.setOnClickListener(v -> {
-            boolean hasGroup = groupMemberRepository.checkStudentHasGroup(currentUserCode);
-            if (hasGroup) {
-                Toast.makeText(this, "Bạn đã có nhóm, không thể tạo mới!", Toast.LENGTH_SHORT).show();
-            } else {
-                Intent intent = new Intent(this, CreateGroupActivity.class);
-                intent.putExtra("USER_CODE", currentUserCode);
-                intent.putExtra("ROLE", currentUserRole);
-                startActivity(intent);
-            }
-        });
+        GroupMemberRepository groupMemberRepository = new GroupMemberRepository(this);
 
         btnGroupInfo.setOnClickListener(v -> {
             Intent intent = new Intent(this, GroupDetailActivity.class);
