@@ -62,6 +62,5 @@ public class LectureDashboardActivity extends AppCompatActivity {
             intent.putExtra("ROLE", currentUserRole);
             startActivity(intent);
         });
-
     }
 }
