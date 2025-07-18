@@ -44,7 +44,7 @@
     </LinearLayout>
 
     <include
-        layout="@layout/sidebar"
+        layout="@layout/sidebar_lecturer"
         android:layout_gravity="start"
         android:layout_width="160dp"
         android:layout_height="match_parent" />
