@@ -1,33 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="160dp"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#FFF3E0"
-    android:padding="8dp">
+    android:fitsSystemWindows="true">
 
-    <!-- Sidebar Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+    <!-- Home Button -->
     <Button
         android:id="@+id/nav_home"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:text="Home"
-        android:drawableLeft="@drawable/ic_launcher_foreground"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textColor="#ffffff"
         android:backgroundTint="#FF7043"
-        android:textColor="#fff"
-        android:layout_marginBottom="8dp"
-        tools:ignore="HardcodedText,RtlHardcoded" />
+        android:layout_marginBottom="12dp"/>
 
+    <!-- Project Button -->
     <Button
         android:id="@+id/nav_project"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Project"
-        android:drawableLeft="@drawable/ic_launcher_foreground"
+        android:layout_height="48dp"
+        android:text="Project ▼"
+        android:textAllCaps="false"
         android:backgroundTint="#FF7043"
-        android:textColor="#fff"
-        android:layout_marginBottom="8dp"
-        tools:ignore="HardcodedText,RtlHardcoded" />
+        android:textSize="16sp"
+        android:textColor="#ffffff"
+        android:layout_marginBottom="8dp"/>
 
-</LinearLayout>
+    <!-- Submenu: Initially hidden -->
+    <LinearLayout
+        android:id="@+id/project_submenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="12dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:paddingLeft="8dp">
+
+        <Button
+            android:id="@+id/nav_pending"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Pending"
+            android:backgroundTint="#FFAB91"
+            android:textColor="#ffffff"
+            android:layout_marginBottom="4dp"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+        <Button
+            android:id="@+id/nav_approved"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Approved"
+            android:backgroundTint="#FFAB91"
+            android:textColor="#ffffff"
+            android:layout_marginBottom="4dp"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+        <Button
+            android:id="@+id/nav_rejected"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Rejected"
+            android:backgroundTint="#FFAB91"
+            android:textColor="#ffffff"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+    </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

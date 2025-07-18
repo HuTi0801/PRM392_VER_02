@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/approved_details_proposal"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:background="#FFFBF5"
-    tools:context=".features.proposal.ApprovedDetailsProposalActivity">
+<androidx.drawerlayout.widget.DrawerLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/approved_details_proposal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:context=".features.proposal.view.ApprovedDetailsProposalActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -43,4 +43,10 @@
             android:clipToPadding="false"/>
     </LinearLayout>
 
-</LinearLayout>
+    <include
+        layout="@layout/sidebar"
+        android:layout_gravity="start"
+        android:layout_width="160dp"
+        android:layout_height="match_parent" />
+
+</androidx.drawerlayout.widget.DrawerLayout>

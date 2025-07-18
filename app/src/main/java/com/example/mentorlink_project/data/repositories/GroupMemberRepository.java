@@ -57,4 +57,24 @@ public class GroupMemberRepository {
         cursor.close();
         return hasGroup;
     }
+
+    /**
+     * Checks if the given user is already a member of any group.
+     * @param userCode The student/user code to check.
+     * @return true if the user is in any group, false otherwise.
+     */
+    public boolean isUserInAnyGroup(String userCode) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(
+                GroupMemberDao.TABLE_NAME,
+                new String[]{"id"},
+                "user_code = ?",
+                new String[]{userCode},
+                null, null, null
+        );
+        boolean exists = cursor.moveToFirst();
+        cursor.close();
+        db.close();
+        return exists;
+    }
 }
