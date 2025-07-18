@@ -82,4 +82,13 @@ public class GroupRepository {
         db.close();
         return groupNames;
     }
+
+    public void updateGroup(GroupEntity group) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", group.getName());
+        db.update(GroupDao.TABLE_NAME, values,
+                "id = ?", new String[]{String.valueOf(group.getId())});
+        db.close();
+    }
 }
