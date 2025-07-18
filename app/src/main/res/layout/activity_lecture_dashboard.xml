@@ -38,7 +38,6 @@
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:layout_marginBottom="16dp"
-
             android:background="@drawable/bg_btn_orange"
             tools:ignore="HardcodedText" />
 
@@ -62,7 +61,19 @@
             android:text="Đề tài bị từ chối"
             android:textColor="@android:color/white"
             android:textSize="16sp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/bg_btn_red"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/btnManageGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:backgroundTint="@null"
+            android:text="Quản lý nhóm"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:background="@drawable/bg_btn_blue"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 </LinearLayout>
