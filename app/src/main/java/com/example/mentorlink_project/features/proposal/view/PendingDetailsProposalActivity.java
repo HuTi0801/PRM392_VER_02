@@ -20,6 +20,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.mentorlink_project.R;
 import com.example.mentorlink_project.data.entities.ProjectEntity;
 import com.example.mentorlink_project.data.repositories.ProjectRepository;
+import com.example.mentorlink_project.features.dashboard.LectureDashboardActivity;
+import com.example.mentorlink_project.features.login.LoginActivity;
 import com.example.mentorlink_project.features.proposal.adapter.PendingDetailProposalAdapter;
 import com.example.mentorlink_project.features.proposal.contract.PendingDetailsProposalContract;
 import com.example.mentorlink_project.features.proposal.presenter.PendingDetailsProposalPresenter;
@@ -33,8 +35,9 @@ public class PendingDetailsProposalActivity extends AppCompatActivity implements
     private PendingDetailProposalAdapter adapter;
     DrawerLayout drawerLayout;
     ImageButton btnMenu;
-    Button btnProject, btnPending, btnApproved, btnRejected;;
+    Button btnProject, btnPending, btnApproved, btnRejected, btnHome, btnGroup;
     LinearLayout submenu;
+    String currentUserCode, currentUserRole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,19 +50,42 @@ public class PendingDetailsProposalActivity extends AppCompatActivity implements
             return insets;
         });
 
+        currentUserCode = getIntent().getStringExtra("USER_CODE");
+        currentUserRole = getIntent().getStringExtra("ROLE");
+
+        if (currentUserCode == null || currentUserRole == null) {
+            Toast.makeText(this, "Phiên đăng nhập đã hết, vui lòng đăng nhập lại", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clear stack
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         //hiển thị sidebar
         drawerLayout = findViewById(R.id.pending_details_proposal);
         btnMenu = findViewById(R.id.btn_menu); // nằm trong header.xml
 
         btnMenu.setOnClickListener(v -> {
-                    if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                    } else {
-                        drawerLayout.openDrawer(GravityCompat.START);
-                    }
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
         });
+
         btnProject = findViewById(R.id.nav_project);
         submenu = findViewById(R.id.project_submenu);
+
+        btnHome = findViewById(R.id.nav_home);
+        btnGroup = findViewById(R.id.nav_group);
+
+        btnHome.setOnClickListener(v -> {
+            Intent intent = new Intent(this, LectureDashboardActivity.class);
+            intent.putExtra("USER_CODE", currentUserCode);
+            intent.putExtra("ROLE", currentUserRole);
+            startActivity(intent);
+        });
 
         btnProject.setOnClickListener(v -> {
             if (submenu.getVisibility() == View.GONE) {
@@ -78,16 +104,22 @@ public class PendingDetailsProposalActivity extends AppCompatActivity implements
 
         btnPending.setOnClickListener(v -> {
             Intent intent = new Intent(this, PendingDetailsProposalActivity.class);
+            intent.putExtra("USER_CODE", getIntent().getStringExtra("USER_CODE"));
+            intent.putExtra("ROLE", getIntent().getStringExtra("ROLE"));
             startActivity(intent);
         });
 
         btnApproved.setOnClickListener(v -> {
             Intent intent = new Intent(this, ApprovedDetailsProposalActivity.class);
+            intent.putExtra("USER_CODE", getIntent().getStringExtra("USER_CODE"));
+            intent.putExtra("ROLE", getIntent().getStringExtra("ROLE"));
             startActivity(intent);
         });
 
         btnRejected.setOnClickListener(v -> {
             Intent intent = new Intent(this, RejectedDetailsProposalActivity.class);
+            intent.putExtra("USER_CODE", getIntent().getStringExtra("USER_CODE"));
+            intent.putExtra("ROLE", getIntent().getStringExtra("ROLE"));
             startActivity(intent);
         });
 
@@ -98,7 +130,7 @@ public class PendingDetailsProposalActivity extends AppCompatActivity implements
 
     @Override
     public void showProposals(List<ProjectEntity> proposalList) {
-        adapter = new PendingDetailProposalAdapter(this, proposalList, presenter);
+        adapter = new PendingDetailProposalAdapter(this, proposalList, presenter, currentUserCode, currentUserRole);
         lvProposals.setAdapter(adapter);
     }
 

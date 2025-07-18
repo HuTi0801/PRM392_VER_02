@@ -20,11 +20,13 @@ public class PendingDetailProposalAdapter extends BaseAdapter {
     private final Context context;
     private final List<ProjectEntity> proposalList;
     private final PendingDetailsProposalContract.Presenter presenter;
-
-    public PendingDetailProposalAdapter(Context context, List<ProjectEntity> proposalList, PendingDetailsProposalContract.Presenter presenter) {
+    private final String userCode, userRole;
+    public PendingDetailProposalAdapter(Context context, List<ProjectEntity> proposalList, PendingDetailsProposalContract.Presenter presenter, String userCode, String userRole) {
         this.context = context;
         this.proposalList = proposalList;
         this.presenter = presenter;
+        this.userCode = userCode;
+        this.userRole = userRole;
     }
 
     @Override
@@ -69,6 +71,8 @@ public class PendingDetailProposalAdapter extends BaseAdapter {
             // TODO: mở ProposalDetailActivity nếu muốn
             Intent intent = new Intent(context, ProposalDetailActivity.class);
             intent.putExtra("project_id", project.getId());
+            intent.putExtra("USER_CODE", userCode);
+            intent.putExtra("ROLE", userRole);
             context.startActivity(intent);
         });
 

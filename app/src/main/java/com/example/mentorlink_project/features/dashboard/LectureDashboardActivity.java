@@ -6,7 +6,6 @@ import android.widget.Button;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.mentorlink_project.R;
-import com.example.mentorlink_project.features.group.view.GroupListActivity;
 import com.example.mentorlink_project.features.login.LoginActivity;
 import com.example.mentorlink_project.features.proposal.view.ApprovedDetailsProposalActivity;
 import com.example.mentorlink_project.features.proposal.view.PendingDetailsProposalActivity;
@@ -51,13 +50,6 @@ public class LectureDashboardActivity extends AppCompatActivity {
 
         btnRejected.setOnClickListener(v -> {
             Intent intent = new Intent(this, RejectedDetailsProposalActivity.class);
-            intent.putExtra("USER_CODE", currentUserCode);
-            intent.putExtra("ROLE", currentUserRole);
-            startActivity(intent);
-        });
-
-        btnManageGroup.setOnClickListener(v -> {
-            Intent intent = new Intent(LectureDashboardActivity.this, GroupListActivity.class);
             intent.putExtra("USER_CODE", currentUserCode);
             intent.putExtra("ROLE", currentUserRole);
             startActivity(intent);
