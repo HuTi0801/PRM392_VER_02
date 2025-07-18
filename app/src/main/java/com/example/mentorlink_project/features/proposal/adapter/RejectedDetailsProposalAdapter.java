@@ -17,10 +17,13 @@ import java.util.List;
 public class RejectedDetailsProposalAdapter extends BaseAdapter {
     private final Context context;
     private final List<ProjectEntity> projectEntityList;
+    private final String userCode, userRole;
 
-    public RejectedDetailsProposalAdapter(Context context, List<ProjectEntity> projectEntityList) {
+    public RejectedDetailsProposalAdapter(Context context, List<ProjectEntity> projectEntityList, String userCode, String userRole) {
         this.context = context;
         this.projectEntityList = projectEntityList;
+        this.userCode = userCode;
+        this.userRole = userRole;
     }
 
     @Override
@@ -59,7 +62,9 @@ public class RejectedDetailsProposalAdapter extends BaseAdapter {
 
         convertView.setOnClickListener(v -> {
             Intent intent = new Intent(context, ProposalDetailActivity.class);
-            intent.putExtra("proposal", projectEntityList.get(i)); // ProjectEntity implements Serializable
+            intent.putExtra("proposal", projectEntityList.get(i));
+            intent.putExtra("USER_CODE", userCode);
+            intent.putExtra("ROLE", userRole);
             context.startActivity(intent);
         });
 

@@ -20,6 +20,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.mentorlink_project.R;
 import com.example.mentorlink_project.data.entities.ProjectEntity;
 import com.example.mentorlink_project.data.repositories.ProjectRepository;
+import com.example.mentorlink_project.features.dashboard.LectureDashboardActivity;
+import com.example.mentorlink_project.features.login.LoginActivity;
 import com.example.mentorlink_project.features.proposal.adapter.ApprovedDetailProposalAdapter;
 import com.example.mentorlink_project.features.proposal.contract.ApprovedDetailsProposalContract;
 import com.example.mentorlink_project.features.proposal.presenter.ApprovedDetailsProposalPresenter;
@@ -33,8 +35,10 @@ public class ApprovedDetailsProposalActivity extends AppCompatActivity implement
     private ApprovedDetailProposalAdapter adapter;
     DrawerLayout drawerLayout;
     ImageButton btnMenu;
-    Button btnProject, btnPending, btnApproved, btnRejected;;
+    Button btnProject, btnPending, btnApproved, btnRejected, btnHome, btnGroup;;
     LinearLayout submenu;
+    String currentUserCode, currentUserRole;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +49,18 @@ public class ApprovedDetailsProposalActivity extends AppCompatActivity implement
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        currentUserCode = getIntent().getStringExtra("USER_CODE");
+        currentUserRole = getIntent().getStringExtra("ROLE");
+
+        if (currentUserCode == null || currentUserRole == null) {
+            Toast.makeText(this, "Phiên đăng nhập đã hết, vui lòng đăng nhập lại", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clear stack
+            startActivity(intent);
+            finish();
+            return;
+        }
 
         //hiển thị sidebar
         drawerLayout = findViewById(R.id.approved_details_proposal);
@@ -59,6 +75,16 @@ public class ApprovedDetailsProposalActivity extends AppCompatActivity implement
         });
         btnProject = findViewById(R.id.nav_project);
         submenu = findViewById(R.id.project_submenu);
+
+        btnHome = findViewById(R.id.nav_home);
+        btnGroup = findViewById(R.id.nav_group);
+
+        btnHome.setOnClickListener(v -> {
+            Intent intent = new Intent(this, LectureDashboardActivity.class);
+            intent.putExtra("USER_CODE", currentUserCode);
+            intent.putExtra("ROLE", currentUserRole);
+            startActivity(intent);
+        });
 
         btnProject.setOnClickListener(v -> {
             if (submenu.getVisibility() == View.GONE) {
@@ -97,7 +123,7 @@ public class ApprovedDetailsProposalActivity extends AppCompatActivity implement
 
     @Override
     public void showApprovedProposals(List<ProjectEntity> proposalList) {
-        adapter = new ApprovedDetailProposalAdapter(this, proposalList);
+        adapter = new ApprovedDetailProposalAdapter(this, proposalList, currentUserCode, currentUserRole);
         lvApproved.setAdapter(adapter);
     }
 

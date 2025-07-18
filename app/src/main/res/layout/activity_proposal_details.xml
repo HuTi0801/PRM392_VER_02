@@ -16,7 +16,6 @@
 
         <!-- Reusable Header -->
         <include
-            android:id="@+id/include_header"
             layout="@layout/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -158,11 +157,9 @@
                 tools:ignore="HardcodedText" />
         </LinearLayout>
     </LinearLayout>
-
-    <include
-        layout="@layout/sidebar_lecturer"
+    <FrameLayout
+        android:id="@+id/sidebar_container"
         android:layout_gravity="start"
         android:layout_width="160dp"
-        android:layout_height="match_parent" />
-
+        android:layout_height="match_parent"/>
 </androidx.drawerlayout.widget.DrawerLayout>
