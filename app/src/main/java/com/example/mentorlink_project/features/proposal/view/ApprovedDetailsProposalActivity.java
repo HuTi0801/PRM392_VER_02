@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -26,6 +27,7 @@ import com.example.mentorlink_project.features.proposal.adapter.ApprovedDetailPr
 import com.example.mentorlink_project.features.proposal.contract.ApprovedDetailsProposalContract;
 import com.example.mentorlink_project.features.proposal.presenter.ApprovedDetailsProposalPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ApprovedDetailsProposalActivity extends AppCompatActivity implements ApprovedDetailsProposalContract.View {
@@ -103,28 +105,45 @@ public class ApprovedDetailsProposalActivity extends AppCompatActivity implement
 
         btnPending.setOnClickListener(v -> {
             Intent intent = new Intent(this, PendingDetailsProposalActivity.class);
+            intent.putExtra("USER_CODE", currentUserCode);
+            intent.putExtra("ROLE", currentUserRole);
             startActivity(intent);
         });
 
         btnApproved.setOnClickListener(v -> {
             Intent intent = new Intent(this, ApprovedDetailsProposalActivity.class);
+            intent.putExtra("USER_CODE", currentUserCode);
+            intent.putExtra("ROLE", currentUserRole);
             startActivity(intent);
         });
 
         btnRejected.setOnClickListener(v -> {
             Intent intent = new Intent(this, RejectedDetailsProposalActivity.class);
+            intent.putExtra("USER_CODE", currentUserCode);
+            intent.putExtra("ROLE", currentUserRole);
             startActivity(intent);
         });
 
         lvApproved = findViewById(R.id.lvApprovedProposals);
-        presenter = new ApprovedDetailsProposalPresenter(this, new ProjectRepository(this));
+        presenter = new ApprovedDetailsProposalPresenter(this, new ProjectRepository(this), currentUserCode);
         presenter.loadApprovedProposals();
     }
 
     @Override
     public void showApprovedProposals(List<ProjectEntity> proposalList) {
+        if (proposalList == null) proposalList = new ArrayList<>();
+
         adapter = new ApprovedDetailProposalAdapter(this, proposalList, currentUserCode, currentUserRole);
         lvApproved.setAdapter(adapter);
+
+        TextView tvEmpty = findViewById(R.id.tvEmptyApproved);
+        if (proposalList.isEmpty()) {
+            tvEmpty.setVisibility(View.VISIBLE);
+            lvApproved.setVisibility(View.GONE);
+        } else {
+            tvEmpty.setVisibility(View.GONE);
+            lvApproved.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

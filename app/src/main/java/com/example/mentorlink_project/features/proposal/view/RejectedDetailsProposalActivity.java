@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -26,6 +27,7 @@ import com.example.mentorlink_project.features.proposal.adapter.RejectedDetailsP
 import com.example.mentorlink_project.features.proposal.contract.RejectedDetailsProposalContract;
 import com.example.mentorlink_project.features.proposal.presenter.RejectedDetailsProposalPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RejectedDetailsProposalActivity extends AppCompatActivity implements RejectedDetailsProposalContract.View {
@@ -102,28 +104,45 @@ public class RejectedDetailsProposalActivity extends AppCompatActivity implement
 
         btnPending.setOnClickListener(v -> {
             Intent intent = new Intent(this, PendingDetailsProposalActivity.class);
+            intent.putExtra("USER_CODE", currentUserCode);
+            intent.putExtra("ROLE", currentUserRole);
             startActivity(intent);
         });
 
         btnApproved.setOnClickListener(v -> {
             Intent intent = new Intent(this, ApprovedDetailsProposalActivity.class);
+            intent.putExtra("USER_CODE", currentUserCode);
+            intent.putExtra("ROLE", currentUserRole);
             startActivity(intent);
         });
 
         btnRejected.setOnClickListener(v -> {
             Intent intent = new Intent(this, RejectedDetailsProposalActivity.class);
+            intent.putExtra("USER_CODE", currentUserCode);
+            intent.putExtra("ROLE", currentUserRole);
             startActivity(intent);
         });
 
         listView = findViewById(R.id.lvRejectedProposals);
-        rejectedDetailsProposalPresenter = new RejectedDetailsProposalPresenter(this, new ProjectRepository(this));
+        rejectedDetailsProposalPresenter = new RejectedDetailsProposalPresenter(this, new ProjectRepository(this), currentUserCode);
         rejectedDetailsProposalPresenter.loadRejectedProposals();
     }
 
     @Override
     public void showRejectedProposals(List<ProjectEntity> proposalList) {
+        if (proposalList == null) proposalList = new ArrayList<>();
+
         rejectedDetailsProposalAdapter = new RejectedDetailsProposalAdapter(this, proposalList, currentUserCode, currentUserRole);
         listView.setAdapter(rejectedDetailsProposalAdapter);
+
+        TextView tvEmpty = findViewById(R.id.tvEmptyRejected);
+        if (proposalList.isEmpty()) {
+            tvEmpty.setVisibility(View.VISIBLE);
+            listView.setVisibility(View.GONE);
+        } else {
+            tvEmpty.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

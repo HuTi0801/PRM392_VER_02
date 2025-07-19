@@ -73,11 +73,24 @@ public class ProjectRepository {
         db.close();
     }
 
-    public List<ProjectEntity> getProjectsByStatus(String status) {
+    public List<ProjectEntity> getProjectsByStatus(String status, String lecturerCode) {
         List<ProjectEntity> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM Project WHERE TRIM(status) = ?", new String[]{status.trim()});
+        String query;
+        String[] args;
+
+        // Nếu lecturerCode được cung cấp, lọc theo cả status và lecturer
+        if (lecturerCode != null && !lecturerCode.trim().isEmpty()) {
+            query = "SELECT * FROM Project WHERE TRIM(status) = ? AND TRIM(lecture_code) = ?";
+            args = new String[]{status.trim(), lecturerCode.trim()};
+        } else {
+            // Nếu không có lecturerCode, chỉ lọc theo status
+            query = "SELECT * FROM Project WHERE TRIM(status) = ?";
+            args = new String[]{status.trim()};
+        }
+
+        Cursor cursor = db.rawQuery(query, args);
 
         while (cursor.moveToNext()) {
             ProjectEntity p = new ProjectEntity();

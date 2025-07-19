@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -26,6 +27,7 @@ import com.example.mentorlink_project.features.proposal.adapter.PendingDetailPro
 import com.example.mentorlink_project.features.proposal.contract.PendingDetailsProposalContract;
 import com.example.mentorlink_project.features.proposal.presenter.PendingDetailsProposalPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PendingDetailsProposalActivity extends AppCompatActivity implements PendingDetailsProposalContract.View {
@@ -124,14 +126,25 @@ public class PendingDetailsProposalActivity extends AppCompatActivity implements
         });
 
         lvProposals = findViewById(R.id.lvProposals);
-        presenter = new PendingDetailsProposalPresenter(this, new ProjectRepository(this));
+        presenter = new PendingDetailsProposalPresenter(this, new ProjectRepository(this), currentUserCode);
         presenter.loadPendingProposals();
     }
 
     @Override
     public void showProposals(List<ProjectEntity> proposalList) {
+        if (proposalList == null) proposalList = new ArrayList<>();
+
         adapter = new PendingDetailProposalAdapter(this, proposalList, presenter, currentUserCode, currentUserRole);
         lvProposals.setAdapter(adapter);
+
+        TextView tvEmpty = findViewById(R.id.tvEmptyPending); // bạn cần tạo trong XML
+        if (proposalList.isEmpty()) {
+            tvEmpty.setVisibility(View.VISIBLE);
+            lvProposals.setVisibility(View.GONE);
+        } else {
+            tvEmpty.setVisibility(View.GONE);
+            lvProposals.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

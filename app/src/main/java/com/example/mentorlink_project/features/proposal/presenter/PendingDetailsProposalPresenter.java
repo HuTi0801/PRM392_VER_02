@@ -10,15 +10,17 @@ public class PendingDetailsProposalPresenter implements PendingDetailsProposalCo
 
     private final PendingDetailsProposalContract.View view;
     private final ProjectRepository repository;
+    private final String lecturerCode;
 
-    public PendingDetailsProposalPresenter(PendingDetailsProposalContract.View view, ProjectRepository repository) {
+    public PendingDetailsProposalPresenter(PendingDetailsProposalContract.View view, ProjectRepository repository, String lecturerCode) {
         this.view = view;
         this.repository = repository;
+        this.lecturerCode = lecturerCode;
     }
 
     @Override
     public void loadPendingProposals() {
-        List<ProjectEntity> pendingList = repository.getProjectsByStatus("PENDING");
+        List<ProjectEntity> pendingList = repository.getProjectsByStatus("PENDING", lecturerCode);
         view.showProposals(pendingList);
     }
 
