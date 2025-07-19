@@ -35,7 +35,7 @@ public class PendingDetailsProposalActivity extends AppCompatActivity implements
     private PendingDetailProposalAdapter adapter;
     DrawerLayout drawerLayout;
     ImageButton btnMenu;
-    Button btnProject, btnPending, btnApproved, btnRejected, btnHome, btnGroup;
+    Button btnProject, btnPending, btnApproved, btnRejected, btnHome, btnGroup, btnLogout;
     LinearLayout submenu;
     String currentUserCode, currentUserRole;
 
@@ -126,6 +126,14 @@ public class PendingDetailsProposalActivity extends AppCompatActivity implements
         lvProposals = findViewById(R.id.lvProposals);
         presenter = new PendingDetailsProposalPresenter(this, new ProjectRepository(this));
         presenter.loadPendingProposals();
+
+        btnLogout = findViewById(R.id.btn_logout);
+        btnLogout.setOnClickListener(v -> {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.example.mentorlink_project.features.group.view;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,6 +22,7 @@ import com.example.mentorlink_project.data.entities.GroupMemberEntity;
 import com.example.mentorlink_project.data.repositories.AccountRepository;
 import com.example.mentorlink_project.data.repositories.GroupMemberRepository;
 import com.example.mentorlink_project.data.repositories.GroupRepository;
+import com.example.mentorlink_project.features.login.LoginActivity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,7 +36,7 @@ public class GroupDetailActivity extends AppCompatActivity {
     private EditText[] memberIdFields;
     private TextView[] memberNameViews;
     private Button[] removeButtons;
-    private Button btnCreateGroup, btnSave, btnClear;
+    private Button btnCreateGroup, btnSave, btnClear, btnLogout;
     private String userCode;
     private GroupMemberRepository groupMemberRepo;
     private GroupRepository groupRepo;
@@ -43,7 +45,6 @@ public class GroupDetailActivity extends AppCompatActivity {
     private int groupId = -1;
     private boolean isCreatingNewGroup = false;
     private Set<String> originalMemberIds = new HashSet<>();
-
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private boolean isCurrentUserLeader = false;
@@ -58,6 +59,14 @@ public class GroupDetailActivity extends AppCompatActivity {
         setupUserInfo();
         initializeViews();
         checkUserGroupStatus();
+
+        btnLogout = findViewById(R.id.btn_logout);
+        btnLogout.setOnClickListener(v -> {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
     }
 
     @Override
@@ -427,23 +436,11 @@ public class GroupDetailActivity extends AppCompatActivity {
         });
     }
 
-
-
-
-
-
-
     private boolean isCurrentUserLeader() {
         if (groupId == -1) return false;
         GroupMemberEntity member = groupMemberRepo.getMemberByUserCode(userCode);
         return member != null && "LEADER".equals(member.getRoles());
     }
-
-
-
-
-
-
 
     private void removeMember(int memberIndex) {
         if (!isCurrentUserLeader) {

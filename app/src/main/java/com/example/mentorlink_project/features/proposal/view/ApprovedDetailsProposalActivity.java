@@ -35,7 +35,7 @@ public class ApprovedDetailsProposalActivity extends AppCompatActivity implement
     private ApprovedDetailProposalAdapter adapter;
     DrawerLayout drawerLayout;
     ImageButton btnMenu;
-    Button btnProject, btnPending, btnApproved, btnRejected, btnHome, btnGroup;;
+    Button btnProject, btnPending, btnApproved, btnRejected, btnHome, btnGroup, btnLogout;
     LinearLayout submenu;
     String currentUserCode, currentUserRole;
 
@@ -119,6 +119,14 @@ public class ApprovedDetailsProposalActivity extends AppCompatActivity implement
         lvApproved = findViewById(R.id.lvApprovedProposals);
         presenter = new ApprovedDetailsProposalPresenter(this, new ProjectRepository(this));
         presenter.loadApprovedProposals();
+
+        btnLogout = findViewById(R.id.btn_logout);
+        btnLogout.setOnClickListener(v -> {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
     }
 
     @Override

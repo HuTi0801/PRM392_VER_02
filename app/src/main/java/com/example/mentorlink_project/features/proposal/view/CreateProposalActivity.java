@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mentorlink_project.R;
 import com.example.mentorlink_project.data.repositories.GroupMemberRepository;
+import com.example.mentorlink_project.features.login.LoginActivity;
 import com.example.mentorlink_project.features.proposal.contract.CreateProposalContract;
 import com.example.mentorlink_project.features.proposal.presenter.CreateProposalPresenter;
 
@@ -18,7 +19,7 @@ import java.util.List;
 public class CreateProposalActivity extends AppCompatActivity implements CreateProposalContract.View {
     private EditText edtTitle, edtDesc;
     private Spinner spinnerMajor, spinnerLecturer;
-    private Button btnAttachFile, btnSend;
+    private Button btnAttachFile, btnSend, btnLogout;
     private TextView tvFileName;
     private CreateProposalPresenter presenter;
     private String fileUrl = "";
@@ -73,6 +74,14 @@ public class CreateProposalActivity extends AppCompatActivity implements CreateP
             String major = (String) spinnerMajor.getSelectedItem();
             String lecturer = (String) spinnerLecturer.getSelectedItem();
             presenter.onSendClicked(title, desc, fileUrl, major, lecturer, groupId);
+        });
+
+        btnLogout = findViewById(R.id.btn_logout);
+        btnLogout.setOnClickListener(v -> {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
         });
     }
 

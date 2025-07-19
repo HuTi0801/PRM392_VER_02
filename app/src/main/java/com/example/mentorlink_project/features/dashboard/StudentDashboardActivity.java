@@ -20,6 +20,7 @@ public class StudentDashboardActivity extends AppCompatActivity {
 
         Button btnGroupInfo = findViewById(R.id.btnGroupInfo);
         Button btnProposalInfo = findViewById(R.id.btnProposalInfo);
+        Button btnLogout = findViewById(R.id.btn_logout);
 
         // Lấy userCode từ intent
         String currentUserCode = getIntent().getStringExtra("USER_CODE");
@@ -48,6 +49,13 @@ public class StudentDashboardActivity extends AppCompatActivity {
             intent.putExtra("USER_CODE", currentUserCode);
             intent.putExtra("ROLE", currentUserRole);
             startActivity(intent);
+        });
+
+        btnLogout.setOnClickListener(v -> {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
         });
     }
 }

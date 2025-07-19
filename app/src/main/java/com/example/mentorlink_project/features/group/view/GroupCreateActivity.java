@@ -1,5 +1,6 @@
 package com.example.mentorlink_project.features.group.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.mentorlink_project.R;
 import com.example.mentorlink_project.features.group.contract.GroupCreateContract;
 import com.example.mentorlink_project.features.group.presenter.GroupCreatePresenter;
+import com.example.mentorlink_project.features.login.LoginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,7 @@ import java.util.List;
 public class GroupCreateActivity extends AppCompatActivity implements GroupCreateContract.View {
     private EditText edtGroupName, edtMemberId1, edtMemberId2, edtMemberId3, edtMemberId4, edtMemberId5;
     private TextView tvMemberName1, tvMemberName2, tvMemberName3, tvMemberName4, tvMemberName5;
-    private Button btnSave, btnClear;
+    private Button btnSave, btnClear, btnLogout;
     private GroupCreatePresenter presenter;
     private String leaderId = "SE0001"; // get from session
 
@@ -61,6 +63,13 @@ public class GroupCreateActivity extends AppCompatActivity implements GroupCreat
         });
 
         btnClear.setOnClickListener(v -> presenter.onClearClicked());
+        btnLogout = findViewById(R.id.btn_logout);
+        btnLogout.setOnClickListener(v -> {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
     }
 
     @Override

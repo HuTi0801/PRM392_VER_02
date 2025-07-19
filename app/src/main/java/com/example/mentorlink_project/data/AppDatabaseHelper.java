@@ -12,7 +12,7 @@ import com.example.mentorlink_project.data.dao.ProjectDao;
 public class AppDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "mentorlink.db";
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 4;
 
     public AppDatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
