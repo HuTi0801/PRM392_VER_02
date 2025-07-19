@@ -1,5 +1,6 @@
 package com.example.mentorlink_project.features.proposal.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -41,6 +42,7 @@ public class RejectedDetailsProposalAdapter extends BaseAdapter {
         return projectEntityList.get(i).getId();
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View getView(int i, View convertView, ViewGroup parent) {
         if (convertView == null)

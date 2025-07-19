@@ -20,7 +20,7 @@ public class LectureDashboardActivity extends AppCompatActivity {
         Button btnPending  = findViewById(R.id.btnPending);
         Button btnApproved = findViewById(R.id.btnApproved);
         Button btnRejected = findViewById(R.id.btnRejected);
-        Button btnManageGroup = findViewById(R.id.btnManageGroup);
+        Button btnLogout = findViewById(R.id.btn_logout);
 
         String currentUserCode = getIntent().getStringExtra("USER_CODE");
         String currentUserRole = getIntent().getStringExtra("ROLE");
@@ -53,6 +53,13 @@ public class LectureDashboardActivity extends AppCompatActivity {
             intent.putExtra("USER_CODE", currentUserCode);
             intent.putExtra("ROLE", currentUserRole);
             startActivity(intent);
+        });
+
+        btnLogout.setOnClickListener(v -> {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
         });
     }
 }

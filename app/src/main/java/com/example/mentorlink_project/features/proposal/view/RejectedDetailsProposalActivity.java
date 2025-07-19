@@ -34,7 +34,7 @@ public class RejectedDetailsProposalActivity extends AppCompatActivity implement
     private RejectedDetailsProposalAdapter rejectedDetailsProposalAdapter;
     DrawerLayout drawerLayout;
     ImageButton btnMenu;
-    Button btnProject, btnPending, btnApproved, btnRejected, btnHome, btnGroup;
+    Button btnProject, btnPending, btnApproved, btnRejected, btnHome, btnGroup, btnLogout;
     LinearLayout submenu;
     String currentUserCode, currentUserRole;
 
@@ -118,6 +118,14 @@ public class RejectedDetailsProposalActivity extends AppCompatActivity implement
         listView = findViewById(R.id.lvRejectedProposals);
         rejectedDetailsProposalPresenter = new RejectedDetailsProposalPresenter(this, new ProjectRepository(this));
         rejectedDetailsProposalPresenter.loadRejectedProposals();
+
+        btnLogout = findViewById(R.id.btn_logout);
+        btnLogout.setOnClickListener(v -> {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
     }
 
     @Override

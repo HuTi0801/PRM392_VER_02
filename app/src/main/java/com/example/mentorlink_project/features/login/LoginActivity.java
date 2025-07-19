@@ -2,6 +2,7 @@ package com.example.mentorlink_project.features.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -31,6 +32,11 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
             String password = edtPassword.getText().toString().trim();
             presenter.handleLogin(username, password);
         });
+
+        View btnLogout = findViewById(R.id.btn_logout);
+        if (btnLogout != null) {
+            btnLogout.setVisibility(View.GONE);
+        }
     }
 
     @Override
