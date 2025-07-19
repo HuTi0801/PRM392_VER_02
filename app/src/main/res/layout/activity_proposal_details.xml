@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/proposal_details"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:context=".features.proposal.view.ProposalDetailActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <!-- Reusable Header -->
+        <include
+            layout="@layout/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Proposal Details"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            tools:ignore="HardcodedText"/>
+
+        <!-- Project Info Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="#F5F5F5"
+            android:elevation="2dp"
+            android:layout_margin="8dp"
+            android:clipToPadding="false"
+            android:backgroundTint="#F5F5F5">
+
+            <!-- Topic -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Topic"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"
+                tools:ignore="HardcodedText"/>
+            <TextView
+                android:id="@+id/tv_topic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Lecturer -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lecturer"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"
+                tools:ignore="HardcodedText"/>
+            <TextView
+                android:id="@+id/tv_lecturer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Status -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Status"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"
+                tools:ignore="HardcodedText"/>
+            <TextView
+                android:id="@+id/tv_proposal_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Comment (Reject Reason) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Comment"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"
+                tools:ignore="HardcodedText"/>
+            <TextView
+                android:id="@+id/tv_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Document URL -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Document"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"
+                tools:ignore="HardcodedText"/>
+            <TextView
+                android:id="@+id/tv_document_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="16sp"
+                android:autoLink="web"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Add/Remove Proposal Buttons (unchanged) -->
+            <Button
+                android:id="@+id/btn_add_proposal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add Proposal"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="@android:color/holo_blue_light"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:id="@+id/btn_remove_proposal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Remove Proposal"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="@android:color/holo_red_light"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+    </LinearLayout>
+    <FrameLayout
+        android:id="@+id/sidebar_container"
+        android:layout_gravity="start"
+        android:layout_width="160dp"
+        android:layout_height="match_parent"/>
+</androidx.drawerlayout.widget.DrawerLayout>

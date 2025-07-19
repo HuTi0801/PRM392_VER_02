@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="160dp"
+    android:layout_height="match_parent"
+    android:background="#FFF3E0"
+    android:fitsSystemWindows="true"
+    android:layout_gravity="start">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+        <!-- Home Button -->
+        <Button
+            android:id="@+id/nav_home"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Home"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textColor="#ffffff"
+            android:backgroundTint="#FF7043"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Group Button -->
+        <Button
+            android:id="@+id/nav_group"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Group"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textColor="#ffffff"
+            android:backgroundTint="#FF7043"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Group Button -->
+        <Button
+            android:id="@+id/nav_proposal"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Proposal"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textColor="#ffffff"
+            android:backgroundTint="#FF7043"
+            android:layout_marginBottom="12dp"/>
+
+    </LinearLayout>
+</ScrollView>
