@@ -19,6 +19,13 @@ public class GroupMemberRepository {
         dbHelper = new AppDatabaseHelper(context);
     }
 
+    public void refreshDatabaseConnection() {
+        dbHelper.refreshConnection();
+    }
+
+    public SQLiteDatabase getWritableDatabase() {
+        return dbHelper.getWritableDatabase();
+    }
     public void insertGroupMember(GroupMemberEntity member) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -141,4 +148,25 @@ public class GroupMemberRepository {
                 new String[]{String.valueOf(groupId), userCode});
         db.close();
     }
+
+    public boolean isUserLeaderInAnyGroup(String userCode) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        boolean isLeader = false;
+
+        // Query to check if user exists as a leader in any group
+        String query = "SELECT 1 FROM " + GroupMemberDao.TABLE_NAME +
+                " WHERE user_code = ? AND roles = 'LEADER' LIMIT 1";
+
+        try (Cursor cursor = db.rawQuery(query, new String[]{userCode})) {
+            isLeader = cursor.moveToFirst();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.close();
+        }
+
+        return isLeader;
+    }
+
+
 }

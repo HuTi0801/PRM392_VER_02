@@ -118,4 +118,39 @@ public class ProjectRepository {
         db.close();
         return project;
     }
+
+    public Integer getProjectIdByUserCode(String userCode) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Integer projectId = null;
+
+        String query = "SELECT Project.id " +
+                "FROM Project " +
+                "JOIN GroupMember ON Project.group_id = GroupMember.group_id " +
+                "WHERE GroupMember.user_code = ? " +
+                "LIMIT 1"; // giả sử mỗi user chỉ thuộc 1 nhóm/project
+
+        Cursor cursor = db.rawQuery(query, new String[]{userCode});
+        if (cursor.moveToFirst()) {
+            projectId = cursor.getInt(0);
+        }
+        cursor.close();
+        return projectId;
+    }
+
+    public boolean hasProjectForUser(String userCode) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        boolean hasProject = false;
+
+        String query = "SELECT COUNT(*) FROM Project " +
+                "JOIN GroupMember ON Project.group_id = GroupMember.group_id " +
+                "WHERE GroupMember.user_code = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{userCode});
+        if (cursor.moveToFirst()) {
+            hasProject = cursor.getInt(0) > 0;
+        }
+        cursor.close();
+        db.close();
+        return hasProject;
+    }
 }
